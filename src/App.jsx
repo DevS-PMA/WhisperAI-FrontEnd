@@ -9,13 +9,15 @@ import CoreEmotion from './sections/CoreEmotion'
 export default function App() {
   return (
     <div className="bg-[#fefcfc] text-[#4a2f2f] font-sans">
-      <Navbar />
       <SafePopup />
-      <HeroSection />
-      <WhisperInput />
-      <TrustSection />
-      <FeatureCards />
-      <CoreEmotion />
+      <div id="main-content">
+        <Navbar />
+        <HeroSection />
+        <WhisperInput />
+        <TrustSection />
+        <FeatureCards />
+        <CoreEmotion />
+      </div>
     </div>
   )
 }
