@@ -4,21 +4,25 @@ export default function FeatureCards() {
       title: 'Emotional Intelligence',
       desc: 'Understands nuanced emotions and responds with genuine empathy and care.',
       icon: '🧠',
+      color: 'hover:bg-[#fef3f3]',
     },
     {
       title: 'Thoughtful Responses',
       desc: 'Processes conversations with depth, considering context and emotional state.',
       icon: '💬',
+      color: 'hover:bg-[#fef3f3]',
     },
     {
       title: 'Safe & Secure',
       desc: 'Your conversations are private, encrypted, and never shared or stored.',
       icon: '🔒',
+      color: 'bg-[#e6b9b9] text-white hover:brightness-105',
     },
     {
       title: 'Designed for Women',
       desc: 'Built with understanding of women’s communication styles and emotional needs.',
       icon: '👩‍🦰',
+      color: 'hover:bg-[#fef3f3]',
     },
   ]
 
@@ -28,11 +32,11 @@ export default function FeatureCards() {
         {features.map((f, idx) => (
           <div
             key={idx}
-            className="bg-white border border-[#e5dcdc] rounded-xl p-6 shadow-sm text-center"
+            className={`transition-all duration-200 cursor-pointer border border-[#e5dcdc] rounded-xl p-6 shadow-sm text-center ${f.color}`}
           >
             <div className="text-2xl mb-2">{f.icon}</div>
-            <h4 className="font-semibold text-[#4a2f2f] mb-2">{f.title}</h4>
-            <p className="text-sm text-[#6b5a5a]">{f.desc}</p>
+            <h4 className="font-semibold mb-2 text-lg">{f.title}</h4>
+            <p className="text-sm">{f.desc}</p>
           </div>
         ))}
       </div>
