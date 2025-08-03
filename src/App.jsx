@@ -2,6 +2,7 @@ import Navbar from './sections/Navbar'
 import HeroSection from './sections/HeroSection'
 import WhisperInput from './sections/WhisperInput'
 import SafePopup from './sections/SafePopup'
+import TrustSection from './sections/TrustSection'
 
 export default function App() {
   return (
