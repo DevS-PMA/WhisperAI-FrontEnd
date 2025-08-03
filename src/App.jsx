@@ -3,6 +3,7 @@ import HeroSection from './sections/HeroSection'
 import WhisperInput from './sections/WhisperInput'
 import SafePopup from './sections/SafePopup'
 import TrustSection from './sections/TrustSection'
+import FeatureCards from './sections/FeatureCards'
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <SafePopup />
       <HeroSection />
       <WhisperInput />
+      <FeatureCards />
     </div>
   )
 }
