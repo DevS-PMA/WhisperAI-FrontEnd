@@ -13,8 +13,9 @@ export default function App() {
       <SafePopup />
       <HeroSection />
       <WhisperInput />
+      <TrustSection />
       <FeatureCards />
-      <CoreEmotion /> 
+      <CoreEmotion />
     </div>
   )
 }
