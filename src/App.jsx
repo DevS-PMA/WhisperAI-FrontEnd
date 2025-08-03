@@ -4,6 +4,7 @@ import WhisperInput from './sections/WhisperInput'
 import SafePopup from './sections/SafePopup'
 import TrustSection from './sections/TrustSection'
 import FeatureCards from './sections/FeatureCards'
+import CoreEmotion from './sections/CoreEmotion'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <HeroSection />
       <WhisperInput />
       <FeatureCards />
+      <CoreEmotion /> 
     </div>
   )
 }
