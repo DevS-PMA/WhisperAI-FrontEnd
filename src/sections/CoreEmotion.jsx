@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom'
+
 export default function CoreEmotion() {
+  const navigate = useNavigate()
+
   return (
     <section className="px-6 md:px-20 py-16">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
@@ -27,10 +31,13 @@ export default function CoreEmotion() {
 
       {/* Bottom CTA */}
       <div className="text-center mt-10">
-        <button className="bg-[#bda5aa] hover:bg-[#a78d91] text-white text-sm font-medium px-6 py-2 rounded-full">
+        <button
+          onClick={() => navigate('/chat')}
+          className="bg-[#bda5aa] hover:bg-[#a78d91] text-white text-sm font-medium px-6 py-2 rounded-full"
+        >
           Whisper Now
         </button>
       </div>
     </section>
-  );
+  )
 }
