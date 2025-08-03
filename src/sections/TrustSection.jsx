@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom'
+
 export default function TrustSection() {
+  const navigate = useNavigate()
+
   return (
     <section className="px-6 md:px-20 py-16">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
@@ -30,11 +34,14 @@ export default function TrustSection() {
             <strong>More than just AI –</strong> It’s a companion that truly understands emotional intelligence and creates genuine connections.
           </p>
 
-          <button className="bg-[#bda5aa] hover:bg-[#a78d91] text-white text-sm font-medium px-6 py-2 rounded-full">
+          <button
+            onClick={() => navigate('/chat')}
+            className="bg-[#bda5aa] hover:bg-[#a78d91] text-white text-sm font-medium px-6 py-2 rounded-full"
+          >
             Whisper Now
           </button>
         </div>
       </div>
     </section>
-  );
+  )
 }
