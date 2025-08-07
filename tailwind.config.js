@@ -6,10 +6,15 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: '#d9b4b4',
+        secondary: '#fef6f6',
+      },
       fontFamily: {
-        sans: ['"Open Sans"', 'sans-serif'],
+        serif: ['"Playfair Display"', 'serif'],
+        sans: ['"Inter"', 'sans-serif'],
       },
     },
   },
   plugins: [],
-}
+};
