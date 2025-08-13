@@ -11,7 +11,7 @@ export default function FeatureCards() {
       desc: 'Processes conversations with depth, considering context and emotional state.',
     },
     {
-      icon: `${import.meta.env.BASE_URL}icons/shield.png`,
+      icon: `${import.meta.env.BASE_URL}icons/sheild.png`,
       title: 'Safe & Secure',
       desc: 'Your conversations are private, encrypted, and never shared or stored.',
     },
