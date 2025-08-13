@@ -8,20 +8,19 @@ import FeatureCards from './sections/FeatureCards'
 import CoreEmotion from './sections/CoreEmotion'
 import LoginModal from './components/LoginModal'
 import EmotionCheckModal from './components/EmotionCheckModal'
+import SafeExitButton from './components/SafeExitButton'
 
 export default function App() {
   const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') // login | emotion | signup
   const [showSafePopup, setShowSafePopup] = useState(true)
 
-  // When SafePopup is closed, show emotion modal
   const handleSafeContinue = () => {
     setShowSafePopup(false)
     setMode('emotion')
     setShowModal(true)
   }
 
-  // Prevent scrolling when SafePopup is open
   useEffect(() => {
     document.body.style.overflow = showSafePopup ? 'hidden' : 'auto'
     return () => {
@@ -30,11 +29,21 @@ export default function App() {
   }, [showSafePopup])
 
   return (
-    <div className="bg-[#fefcfc] text-[#4a2f2f] font-sans">
-      {/* Safe intro popup */}
-      {showSafePopup && <SafePopup onContinue={handleSafeContinue} />}
+    <div className="bg-[#fefcfc] text-[#4a2f2f] font-sans relative">
+      {/*  Always visible Safe Exit button */}
+      <div className="fixed top-4 right-4 z-[100]">
+        <SafeExitButton />
+      </div>
 
-      <div id="main-content">
+      {/*  SafePopup modal */}
+      {showSafePopup && (
+        <div className="relative z-50">
+          <SafePopup onContinue={handleSafeContinue} />
+        </div>
+      )}
+
+      {/*  Main site content, pushed down a bit */}
+      <div id="main-content" className="pt-20 relative z-10">
         <Navbar
           onLoginClick={() => {
             setMode('login')
@@ -48,7 +57,7 @@ export default function App() {
         <CoreEmotion />
       </div>
 
-      {/* Login modal */}
+      {/*  Login modal */}
       {showModal && mode === 'login' && (
         <LoginModal
           onClose={() => setShowModal(false)}
@@ -57,7 +66,7 @@ export default function App() {
         />
       )}
 
-      {/* Emotion check modal */}
+      {/*  Emotion modal */}
       {mode === 'emotion' && (
         <EmotionCheckModal
           show={showModal}
