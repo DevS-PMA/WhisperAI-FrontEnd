@@ -18,18 +18,6 @@ export default function Navbar({ onLoginClick }) {
         <a href="#" className="hover:text-[#d4948d]">Resource Hub</a>
       </nav>
 
-      {/* Right Side */}
-      <div className="flex items-center space-x-4">
-        <span className="text-sm text-gray-500 hidden sm:block">
-          Tap any time to exit safely.
-        </span>
-
-        <button
-          className="px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-[#5c4140] hover:bg-[#f3e1df] transition"
-        >
-          Safe Exit
-        </button>
-
         {/* Login button */}
         <button
           onClick={onLoginClick}
