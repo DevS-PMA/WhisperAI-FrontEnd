@@ -1,31 +1,26 @@
 export default function Navbar({ onLoginClick }) {
   return (
-    <header className="w-full px-6 py-4 flex items-center justify-between border-b border-gray-200 bg-white z-50 sticky top-0">
-      {/* Logo */}
-      <div className="flex items-center space-x-2">
-        <img
-          src="/logo.webp"
-          alt="Whisper Ai logo"
-          className="h-10 w-auto object-contain drop-shadow-md"
-        />
+    <header className="w-full flex justify-between items-center px-6 md:px-10 py-4 border-b border-[#d7cfcf] bg-white sticky top-0 z-50">
+      <div className="flex items-center gap-2">
+        <img src="/logo.webp" alt="Whisper Logo" className="w-8 h-8" />
+        <span className="text-sm font-semibold text-[#4a2f2f]">Whisper AI logo</span>
       </div>
 
-      {/* Center Nav Links */}
-      <nav className="hidden md:flex items-center space-x-8 text-[15px] text-[#5c4140] font-light">
-        <a href="#" className="hover:text-[#d4948d]">Chat with whisper</a>
-        <a href="#" className="hover:text-[#d4948d]">Start Journaling</a>
-        <a href="#" className="hover:text-[#d4948d]">Safety Tips</a>
-        <a href="#" className="hover:text-[#d4948d]">Resource Hub</a>
+      <nav className="hidden md:flex gap-6 text-sm font-medium">
+        <a href="#" className="hover:text-[#b87777]">Chat with whisper</a>
+        <a href="#" className="hover:text-[#b87777]">Start Journaling</a>
+        <a href="#" className="hover:text-[#b87777]">Safety Tips</a>
+        <a href="#" className="hover:text-[#b87777]">Resource Hub</a>
       </nav>
 
-        {/* Login button */}
+      <div className="flex gap-4 items-center">
         <button
           onClick={onLoginClick}
-          className="ml-3 text-[#ba6d65] hover:text-[#a15048] text-sm font-medium"
+          className="text-[#884b4b] font-semibold hidden sm:block"
         >
           Login
         </button>
       </div>
     </header>
-  );
+  )
 }
