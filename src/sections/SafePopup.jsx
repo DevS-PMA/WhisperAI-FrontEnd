@@ -13,9 +13,9 @@ export default function SafePopup({ onContinue }) {
         </h3>
         <p className="text-sm text-gray-500 mb-4">Take your time</p>
 
-        <p className="text-xs text-gray-600 leading-snug mb-2">
-          Your privacy is paramount. For added discretion, use Incognito/Private
-          mode or clear your browser history.
+        <p className="text-sm text-gray-700 leading-relaxed mb-2">
+          Your privacy is paramount. For added discretion, use Incognito/Private mode or clear your browser history.
+          We employ cookies to enhance your experience—by continuing, you consent to our cookie policy.
         </p>
         <p className="text-xs text-gray-600 leading-snug mb-3">
           Need to leave fast? Click the{" "}
