@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import HeroSection from './sections/HeroSection'
 import WhisperInput from './sections/WhisperInput'
@@ -6,14 +7,18 @@ import SafePopup from './sections/SafePopup'
 import TrustSection from './sections/TrustSection'
 import FeatureCards from './sections/FeatureCards'
 import CoreEmotion from './sections/CoreEmotion'
-import LoginModal from './components/LoginModal'
 import EmotionCheckModal from './components/EmotionCheckModal'
 import SafeExitButton from './components/SafeExitButton'
+import ChatPage from './pages/ChatPage'
+import SignInPage from './pages/LoginPage'
+import SignUpPage from './pages/SignUpPage'
 
 export default function App() {
   const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') // login | emotion | signup
   const [showSafePopup, setShowSafePopup] = useState(true)
+
+  const navigate = useNavigate()
 
   const handleSafeContinue = () => {
     setShowSafePopup(false)
@@ -46,25 +51,28 @@ export default function App() {
       <div id="main-content" className="pt-20 relative z-10">
         <Navbar
           onLoginClick={() => {
-            setMode('login')
-            setShowModal(true)
+            navigate("/login")
           }}
         />
-        <HeroSection />
-        <WhisperInput />
-        <TrustSection />
-        <FeatureCards />
-        <CoreEmotion />
-      </div>
 
-      {/*  Login modal */}
-      {showModal && mode === 'login' && (
-        <LoginModal
-          onClose={() => setShowModal(false)}
-          mode={mode}
-          setMode={setMode}
-        />
-      )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <HeroSection />
+                <WhisperInput />
+                <TrustSection />
+                <FeatureCards />
+                <CoreEmotion />
+              </>
+            }
+          />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/login" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Routes>
+      </div>
 
       {/*  Emotion modal */}
       {mode === 'emotion' && (
