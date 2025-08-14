@@ -15,7 +15,7 @@ import SignUpPage from './pages/SignUpPage'
 
 export default function App() {
   const [showModal, setShowModal] = useState(false)
-  const [mode, setMode] = useState('login') // login | emotion | signup
+  const [mode, setMode] = useState('login') 
   const [showSafePopup, setShowSafePopup] = useState(true)
 
   const navigate = useNavigate()
@@ -52,6 +52,9 @@ export default function App() {
         <Navbar
           onLoginClick={() => {
             navigate("/login")
+          }}
+          onChatClick={() => {
+            navigate("/chat");
           }}
         />
 

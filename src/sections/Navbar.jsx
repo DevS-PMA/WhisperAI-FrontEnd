@@ -12,16 +12,20 @@ export default function Navbar() {
       </div>
 
       <nav className="hidden md:flex gap-6 text-sm font-medium">
-        <Link to="/chat" className="hover:text-[#b87777] transition-colors">
-          Chat with whisper
-        </Link>
-        <Link to="/journal" className="hover:text-[#b87777]">
+        <button
+          type="button"
+          onClick={() => navigate('/chat')}
+          className="hover:text-[#b87777] transition-colors"
+        >
+          Chat with Whisper
+        </button>
+        <Link to="/whisper-ai/journal" className="hover:text-[#b87777]">
           Start Journaling
         </Link>
-        <Link to="/safety" className="hover:text-[#b87777]">
+        <Link to="/whisper-ai/safety" className="hover:text-[#b87777]">
           Safety Tips
         </Link>
-        <Link to="/resources" className="hover:text-[#b87777]">
+        <Link to="/whisper-ai/resources" className="hover:text-[#b87777]">
           Resource Hub
         </Link>
       </nav>
