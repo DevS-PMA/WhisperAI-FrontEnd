@@ -149,7 +149,10 @@ export default function WhisperInput() {
           <button
             onClick={(e) => {
               e.preventDefault()
-              if (!question.trim() && !selectedEmotion) return
+              if (!question.trim() && !selectedEmotion) {
+                navigate('/chat')
+                return
+              }
 
               const message = selectedEmotion
                 ? `I am ${selectedEmotion}, ${question}`

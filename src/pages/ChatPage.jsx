@@ -1,70 +1,107 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import SafeExitButton from '../components/SafeExitButton'
 import { Mic } from 'lucide-react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
-import api from '../scripts/api' 
 
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([
-    // { sender: 'ai', text: 'Hi there,' },
-    // { sender: 'ai', text: `I'm Whisper, your safe space to talk things through.` },
-    // { sender: 'ai', text: `I'm here to help you make sense of your feelings and support your emotional safety.` },
-    // { sender: 'ai', text: `This conversation is completely private and will vanish if you leave or use the quick exit.` },
-    // { sender: 'user', text: `I don't know if this is abuse, but he keeps controlling who I talk to...` },
+    { sender: 'ai', text: 'Hi there,' },
+    { sender: 'ai', text: `I'm Whisper, your safe space to talk things through.` },
+    { sender: 'ai', text: `I'm here to help you make sense of your feelings and support your emotional safety.` },
+    { sender: 'ai', text: `This conversation is completely private and will vanish if you leave or use the quick exit.` },
+    { sender: 'user', text: `I don't know if this is abuse, but he keeps controlling who I talk to...` },
   ])
-  const [title, setTitle] = useState('')
-  const [threadId, setThreadId] = useState('')
-  const [newThread, setNewThread] = useState(true)
+
   const [input, setInput] = useState('')
   const [open, setOpen] = useState({ myChat: true })
+  const recognitionRef = useRef(null);
+  const [recording, setRecording] = useState(false);
+  const [noVoiceTimeout, setNoVoiceTimeout] = useState(null);
+  const [noVoiceDetected, setNoVoiceDetected] = useState(false);
 
-  const [chatHistory, setChatHistory] = useState([])
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialMessage = queryParams.get('message');
 
-
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        const response = await api.get('/chat/history')
-        setChatHistory(response.data.chat_history)
-      } catch (error) {
-        console.error("Error fetching chat history:", error)
+useEffect(() => {
+  if (initialMessage) {
+    setMessages((prev) => {
+      const alreadyExists = prev.some(
+        (msg) => msg.sender === 'user' && msg.text === initialMessage
+      )
+      if (!alreadyExists) {
+        return [
+          ...prev,
+          { sender: 'user', text: initialMessage },
+          { sender: 'ai', text: 'Thank you for sharing. I’m here with you.' },
+        ]
       }
-    }
+      return prev
+    })
+    setInput('')
+  }
+}, [initialMessage])
 
-    fetchChatHistory()
-  }, [])
+useEffect(() => {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    const recog = new SpeechRecognition();
+    recog.continuous = true;
+    recog.interimResults = true;
+    recog.lang = 'en-US';
+    recognitionRef.current = recog;
 
+    recog.onresult = (event) => {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        transcript += event.results[i][0].transcript;
+      }
+      setInput(transcript);
+      resetNoVoiceTimeout();
+    };
 
-  const handleSend = async () => {
+    recog.onerror = () => setRecording(false);
+    recog.onend = () => setRecording(false);
+  }
+}, []);
+
+const startRecording = () => {
+  setNoVoiceDetected(false);
+  if (recognitionRef.current && !recording) {
+    recognitionRef.current.start();
+    setRecording(true);
+    resetNoVoiceTimeout();
+  }
+};
+
+const stopRecording = () => {
+  if (recognitionRef.current && recording) {
+    recognitionRef.current.stop();
+    setRecording(false);
+    clearTimeout(noVoiceTimeout);
+  }
+};
+
+const resetNoVoiceTimeout = () => {
+  clearTimeout(noVoiceTimeout);
+  const timeout = setTimeout(() => {
+    stopRecording();
+    setNoVoiceDetected(true);
+  }, 10000);
+  setNoVoiceTimeout(timeout);
+};
+
+  const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { sender: 'user', text: input }])
       setInput('')
       // Simulate AI response (you can replace with actual logic)
-      // setTimeout(() => {
-      //   setMessages((prev) => [...prev, { sender: 'ai', text: 'Thank you for sharing. I’m here with you.' }])
-      // }, 1000)
-      const response = await api.post('/chat/chat', { 
-        role: 'user',
-        message: input,
-        thread_id: threadId,
-        title: title,
-        timeStamp:  Date.now() / 1000,
-        newThread: newThread
-      })
-      setThreadId(response.data.thread_id)
-      setTitle(response.data.title)
-      setNewThread(false)
-      setMessages((prev) => [...prev, { sender: 'whisper', text: response.data.message }])
+      setTimeout(() => {
+        setMessages((prev) => [...prev, { sender: 'ai', text: 'Thank you for sharing. I’m here with you.' }])
+      }, 1000)
     }
-  }
-
-  const handleHistoryChat = (chat) => {
-    console.log("Selected chat:", chat)
-    setThreadId(chat.thread_id)
-    setTitle(chat.title)
-    setMessages(chat.messages)
   }
 
   return (
@@ -77,106 +114,92 @@ export default function ChatPage() {
       <div className="flex pt-20">
         {/* Sidebar */}
         <aside className="w-[260px] min-h-screen bg-[#f2dbdb] p-6 hidden md:flex flex-col justify-between">
-          {/* Top menu */}
-          <div>
-            <h2 className="text-3xl font-[cursive] mb-6">Whisper Ai</h2>
+  {/* Top menu */}
+  <div>
+    <Link to="/" className="text-3xl font-[cursive] mb-6 hover:underline">
+      Whisper Ai
+    </Link>
 
-            {/* My Chat (collapsible) */}
-            <button
-              onClick={() => setOpen((o) => ({ ...o, myChat: !o.myChat }))}
-              className="w-full flex items-center justify-between text-left text-[#d77474] font-semibold mb-2"
-            >
-              <span className="flex items-center gap-2">
-                <ExternalLink size={18} />
-                My Chat
-              </span>
-              {open.myChat ? (
-                <ChevronDown size={18} />
-              ) : (
-                <ChevronRight size={18} />
-              )}
-            </button>
+    {/* My Chat (collapsible) */}
+    <button
+      onClick={() => setOpen(o => ({ ...o, myChat: !o.myChat }))}
+      className="w-full flex items-center justify-between text-left text-[#d77474] font-semibold mb-2"
+    >
+      <span className="flex items-center gap-2">
+        <ExternalLink size={18} />
+        My Chat
+      </span>
+      {open.myChat ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+    </button>
 
-            {/* Sub-items */}
-            {open.myChat && (
-              <ul className="ml-6 mb-4 space-y-2 text-sm">
-                <li>
-                  <button
-                    className="flex items-center gap-2 hover:underline"
-                    onClick={() => {
-                      setThreadId("");
-                      setTitle("");
-                      setMessages([]);
-                    }}
-                  >
-                    <PlusSquare size={16} />
-                    New Chat
-                  </button>
-                </li>
-                <li>
-                  <NavLink
-                    to="/chat" // or /chat/history
-                    className="flex items-center gap-2 hover:underline"
-                  >
-                    <History size={16} />
-                    Chat History
-                  </NavLink>
-                  {/* Example of a small dated item under history */}
-                  {chatHistory.map((chat) => (
-                    <button
-                      onClick={() => handleHistoryChat(chat)}
-                      key={chat.thread_id}
-                      className="ml-6 mt-1 text-xs text-gray-600"
-                    >
-                      {chat.title}
-                    </button>
-                  ))}
-                </li>
-              </ul>
-            )}
+    {/* Sub-items */}
+    {open.myChat && (
+      <ul className="ml-6 mb-4 space-y-2 text-sm">
+        <li>
+          <NavLink
+            to="/chat" // or /chat/new if you later route it
+            className="flex items-center gap-2 hover:underline"
+          >
+            <PlusSquare size={16} />
+            New Chat
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/chat" // or /chat/history
+            className="flex items-center gap-2 hover:underline"
+          >
+            <History size={16} />
+            Chat History
+          </NavLink>
+          {/* Example of a small dated item under history */}
+          <div className="ml-6 mt-1 text-xs text-gray-600">8-8-2025</div>
+        </li>
+      </ul>
+    )}
 
-            {/* Other top-level links */}
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-center gap-2">
-                <NotebookPen size={18} />
-                <span>Journaling</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Shield size={18} />
-                <span>Safety Tips</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <ExternalLink size={18} />
-                <span>Resources Hub</span>
-              </li>
-            </ul>
-          </div>
+    {/* Other top-level links */}
+    <ul className="space-y-4 text-sm">
+      <li className="flex items-center gap-2">
+        <NotebookPen size={18} />
+        <span>Journaling</span>
+      </li>
+      <li className="flex items-center gap-2">
+        <Shield size={18} />
+        <span>Safety Tips</span>
+      </li>
+      <li className="flex items-center gap-2">
+        <ExternalLink size={18} />
+        <span>Resources Hub</span>
+      </li>
+    </ul>
+  </div>
 
-          {/* Bottom Login/Sign up */}
-          <div className="pt-8">
-            <Link
-              to="/login"
-              className="block text-[#c88f8f] font-semibold text-lg hover:underline"
-            >
-              Login/Sign up
-            </Link>
-          </div>
-        </aside>
+  {/* Bottom Login/Sign up */}
+  <div className="pt-8">
+    <Link
+      to="/login"
+      className="block text-[#c88f8f] font-semibold text-lg hover:underline"
+    >
+      Login/Sign up
+    </Link>
+  </div>
+</aside>
+
 
         {/* Chat Content */}
         <main className="flex-1 p-6">
           <p className="text-center text-sm mb-4">
-            Anonymous chats are erased when you exit. Want to save them?{" "}
-            <Link
-              to="/signup"
-              className="text-[#d77474] underline cursor-pointer"
-            >
-              Sign up here
-            </Link>
-          </p>
+      Anonymous chats are erased when you exit. Want to save them?{' '}
+      <Link
+        to="/signup"
+        className="text-[#d77474] underline cursor-pointer"
+      >
+        Sign up here
+      </Link>
+    </p>
           <h1 className="text-xl font-semibold mb-6 text-center">
-            Welcome. You can talk to me about anything.
-            <br />
+            Welcome. You can talk to me about anything.<br />
             What’s on your mind today?
           </h1>
 
@@ -186,10 +209,10 @@ export default function ChatPage() {
               <div
                 key={index}
                 className={`p-3 rounded-md w-fit max-w-[80%] text-sm ${
-                  msg.role === "user" ? "ml-auto bg-[#e5bcbc]" : "bg-[#f7f7f7]"
+                  msg.sender === 'user' ? 'ml-auto bg-[#e5bcbc]' : 'bg-[#f7f7f7]'
                 }`}
               >
-                {msg.message}
+                {msg.text}
               </div>
             ))}
           </div>
@@ -206,23 +229,33 @@ export default function ChatPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
-              <button className="text-[#4a2f2f] text-xl mr-3">
+              <button
+                onClick={recording ? stopRecording : startRecording}
+                className={`text-[#4a2f2f] text-xl mr-3 ${recording ? 'animate-pulse' : ''}`}
+                title={recording ? 'Stop Recording' : 'Start Recording'}
+              >
                 <Mic size={18} />
+                {recording && <span className="ml-1 text-red-500 text-xs">●</span>}
               </button>
               <button
                 onClick={handleSend}
-                className="bg-gradient-to-r from-pink-200 to-pink-300 text-[#4a2f2f] p-2 rounded-full"
+                className="px-4 py-2 bg-gradient-to-r from-pink-300 to-pink-400 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200"
               >
-                📨
+                Whisper
               </button>
             </div>
+            {noVoiceDetected && (
+              <p className="text-center text-xs text-red-500 mt-2">
+                No voice detected for 10 seconds. Stopped recording.
+              </p>
+            )}
             <p className="text-center text-xs text-gray-500 mt-4">
-              Mistakes can happen — even with Whisper. See our{" "}
+              Mistakes can happen — even with Whisper. See our{' '}
               <span className="underline">terms of Use</span>
             </p>
           </div>
         </main>
       </div>
     </div>
-  );
+  )
 }
