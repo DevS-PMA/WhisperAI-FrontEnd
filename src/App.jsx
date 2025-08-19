@@ -7,14 +7,12 @@ import SafePopup from './sections/SafePopup'
 import TrustSection from './sections/TrustSection'
 import FeatureCards from './sections/FeatureCards'
 import CoreEmotion from './sections/CoreEmotion'
-import EmotionCheckModal from './components/EmotionCheckModal'
 import SafeExitButton from './components/SafeExitButton'
 import ChatPage from './pages/ChatPage'
 import SignInPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 
 export default function App() {
-  const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') 
   const [showSafePopup, setShowSafePopup] = useState(true)
 
@@ -23,7 +21,6 @@ export default function App() {
   const handleSafeContinue = () => {
     setShowSafePopup(false)
     setMode('emotion')
-    setShowModal(true)
   }
 
   useEffect(() => {
@@ -64,7 +61,7 @@ export default function App() {
             element={
               <>
                 <HeroSection />
-                <WhisperInput />
+                <WhisperInput showSuggestions={true} />
                 <TrustSection />
                 <FeatureCards />
                 <CoreEmotion />
@@ -76,14 +73,6 @@ export default function App() {
           <Route path="/signup" element={<SignUpPage />} />
         </Routes>
       </div>
-
-      {/*  Emotion modal */}
-      {mode === 'emotion' && (
-        <EmotionCheckModal
-          show={showModal}
-          onClose={() => setShowModal(false)}
-        />
-      )}
     </div>
   )
 }

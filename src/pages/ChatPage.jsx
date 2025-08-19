@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SafeExitButton from '../components/SafeExitButton'
 import { Mic } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
 
 
@@ -15,7 +15,31 @@ export default function ChatPage() {
   ])
 
   const [input, setInput] = useState('')
-const [open, setOpen] = useState({ myChat: true })
+  const [open, setOpen] = useState({ myChat: true })
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialMessage = queryParams.get('message');
+
+useEffect(() => {
+  if (initialMessage) {
+    setMessages((prev) => {
+      const alreadyExists = prev.some(
+        (msg) => msg.sender === 'user' && msg.text === initialMessage
+      )
+      if (!alreadyExists) {
+        return [
+          ...prev,
+          { sender: 'user', text: initialMessage },
+          { sender: 'ai', text: 'Thank you for sharing. I’m here with you.' },
+        ]
+      }
+      return prev
+    })
+    setInput('')
+  }
+}, [initialMessage])
+
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { sender: 'user', text: input }])
