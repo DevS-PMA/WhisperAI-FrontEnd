@@ -1,8 +1,35 @@
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SafeExitButton from '../components/SafeExitButton';
+import api from "../scripts/api" // Adjust the import path as necessary
 
 export default function SignUpPage() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [connectViaEmail, setConnectViaEmail] = useState(false);
+
+  const handleCreateAccount = async () => {
+    try {
+      const response = await api.post('/auth/create', {
+        firstName,
+        lastName,
+        email,
+        password
+      });
+      navigate("/login");
+      // Handle successful signup
+    } catch (error) {
+      // Handle signup error
+      console.error("Error creating account:", error);
+      alert(error.response?.data?.detail || "An error occurred while creating your account.");
+    }
+  }
+
   const navigate = useNavigate();
 
   return (
@@ -27,6 +54,8 @@ export default function SignUpPage() {
               type="text"
               placeholder="First Name"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
             />
 
             {/* Last Name */}
@@ -34,6 +63,8 @@ export default function SignUpPage() {
               type="text"
               placeholder="Last Name"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
             />
 
             {/* Email */}
@@ -41,6 +72,8 @@ export default function SignUpPage() {
               type="email"
               placeholder="Enter your email"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             {/* Password */}
@@ -48,6 +81,8 @@ export default function SignUpPage() {
               type="password"
               placeholder="Password"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             {/* Confirm Password */}
@@ -55,16 +90,18 @@ export default function SignUpPage() {
               type="password"
               placeholder="Confirm your password"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
             {/* Consent */}
             <label className="flex items-center text-sm mb-3">
-              <input type="checkbox" className="accent-pink-400 mr-2" />
+              <input type="checkbox" className="accent-pink-400 mr-2" onChange={(e) => setConnectViaEmail(e.target.checked)} />
               Yes, it’s safe to connect me by email
             </label>
 
             {/* Create Account */}
-            <button className="w-full bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-black font-semibold py-2 rounded-md shadow">
+            <button onClick={handleCreateAccount} className="w-full bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-black font-semibold py-2 rounded-md shadow" >
               Create Account
             </button>
 

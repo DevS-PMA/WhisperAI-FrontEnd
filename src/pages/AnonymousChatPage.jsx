@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react'
-import SafeExitButton from '../components/SafeExitButton'
-import { Mic } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
-import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
-import api from '../scripts/api' 
-
+import { useEffect, useState } from "react";
+import SafeExitButton from "../components/SafeExitButton";
+import { Mic } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import {
+  ChevronDown,
+  ChevronRight,
+  PlusSquare,
+  History,
+  NotebookPen,
+  Shield,
+  ExternalLink,
+} from "lucide-react";
+import api from "../scripts/api";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([
@@ -13,59 +20,60 @@ export default function ChatPage() {
     // { sender: 'ai', text: `I'm here to help you make sense of your feelings and support your emotional safety.` },
     // { sender: 'ai', text: `This conversation is completely private and will vanish if you leave or use the quick exit.` },
     // { sender: 'user', text: `I don't know if this is abuse, but he keeps controlling who I talk to...` },
-  ])
-  const [title, setTitle] = useState('')
-  const [threadId, setThreadId] = useState('')
-  const [newThread, setNewThread] = useState(true)
-  const [input, setInput] = useState('')
-  const [open, setOpen] = useState({ myChat: true })
+  ]);
+  const [title, setTitle] = useState("");
+  const [threadId, setThreadId] = useState("");
+  const [newThread, setNewThread] = useState(true);
+  const [input, setInput] = useState("");
+  const [open, setOpen] = useState({ myChat: true });
 
-  const [chatHistory, setChatHistory] = useState([])
-
+  const [chatHistory, setChatHistory] = useState([]);
 
   useEffect(() => {
     const fetchChatHistory = async () => {
       try {
-        const response = await api.get('/chat/history')
-        setChatHistory(response.data.chat_history)
+        const response = await api.get("/chat/history");
+        setChatHistory(response.data.chat_history);
       } catch (error) {
-        console.error("Error fetching chat history:", error)
+        console.error("Error fetching chat history:", error);
       }
-    }
+    };
 
-    fetchChatHistory()
-  }, [])
-
+    fetchChatHistory();
+  }, []);
 
   const handleSend = async () => {
     if (input.trim()) {
-      setMessages([...messages, { sender: 'user', text: input }])
-      setInput('')
+      setMessages([...messages, { sender: "user", text: input }]);
+      setInput("");
       // Simulate AI response (you can replace with actual logic)
       // setTimeout(() => {
       //   setMessages((prev) => [...prev, { sender: 'ai', text: 'Thank you for sharing. I’m here with you.' }])
       // }, 1000)
-      const response = await api.post('/chat/chat', { 
-        role: 'user',
+      const response = await api.post("/chat/chat", {
+        role: "user",
         message: input,
         thread_id: threadId,
         title: title,
-        timeStamp:  Date.now() / 1000,
-        newThread: newThread
-      })
-      setThreadId(response.data.thread_id)
-      setTitle(response.data.title)
-      setNewThread(false)
-      setMessages((prev) => [...prev, { sender: 'whisper', text: response.data.message }])
+        timeStamp: Date.now() / 1000,
+        newThread: newThread,
+      });
+      setThreadId(response.data.thread_id);
+      setTitle(response.data.title);
+      setNewThread(false);
+      setMessages((prev) => [
+        ...prev,
+        { sender: "whisper", text: response.data.message },
+      ]);
     }
-  }
+  };
 
   const handleHistoryChat = (chat) => {
-    console.log("Selected chat:", chat)
-    setThreadId(chat.thread_id)
-    setTitle(chat.title)
-    setMessages(chat.messages)
-  }
+    console.log("Selected chat:", chat);
+    setThreadId(chat.thread_id);
+    setTitle(chat.title);
+    setMessages(chat.messages);
+  };
 
   return (
     <div className="min-h-screen bg-[#fffaf9] text-[#4a2f2f] relative">

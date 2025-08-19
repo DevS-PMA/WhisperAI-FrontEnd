@@ -1,10 +1,28 @@
 // src/pages/LoginPage.jsx
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SafeExitButton from '../components/SafeExitButton';
+import api from "../scripts/api"; // Adjust the import path as necessary
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await api.post('/auth/login', {
+        email,
+        password
+      });
+      localStorage.setItem('token', response.data.token); // Store token if needed
+      navigate("/chat");
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert(error.response?.data?.detail || "An error occurred while logging in.");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white relative">
@@ -27,12 +45,16 @@ export default function LoginPage() {
               type="email"
               placeholder="Enter your email"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <input
               type="password"
               placeholder="Password"
               className="w-full border border-pink-300 rounded-md px-4 py-2 mb-3"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <div className="flex justify-between items-center text-sm mb-3">
@@ -45,7 +67,7 @@ export default function LoginPage() {
               </a>
             </div>
 
-            <button className="w-full bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-black font-semibold py-2 rounded-md shadow">
+            <button onClick={handleLogin} className="w-full bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-black font-semibold py-2 rounded-md shadow">
               Sign In
             </button>
 

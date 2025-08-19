@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
+import cookies from 'js-cookie'
 
 const emotions = [
   { label: 'Happy', emoji: '🙂' },
@@ -68,6 +69,10 @@ export default function EmotionCheckModal({ show, onClose }) {
               ? 'bg-[#d598a3] text-white hover:bg-[#bf7d8a]'
               : 'bg-gray-200 text-gray-500 cursor-not-allowed'
           }`}
+          onClick={() => {
+            cookies.set('selectedEmotion', selectedEmotion, { expires: 1 })
+            onClose()
+          }}
         >
           Continue
         </button>
