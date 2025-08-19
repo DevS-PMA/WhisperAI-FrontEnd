@@ -39,12 +39,8 @@ export default function ChatPage() {
 
   const handleSend = async () => {
     if (input.trim()) {
-      setMessages([...messages, { sender: 'user', text: input }])
+      setMessages([...messages, { role: 'user', message: input }])
       setInput('')
-      // Simulate AI response (you can replace with actual logic)
-      // setTimeout(() => {
-      //   setMessages((prev) => [...prev, { sender: 'ai', text: 'Thank you for sharing. I’m here with you.' }])
-      // }, 1000)
       const response = await api.post('/chat/chat', { 
         role: 'user',
         message: input,
@@ -56,7 +52,7 @@ export default function ChatPage() {
       setThreadId(response.data.thread_id)
       setTitle(response.data.title)
       setNewThread(false)
-      setMessages((prev) => [...prev, { sender: 'whisper', text: response.data.message }])
+      setMessages((prev) => [...prev, { role: 'whisper', message: response.data.message }])
     }
   }
 
