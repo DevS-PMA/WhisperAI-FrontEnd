@@ -9,11 +9,13 @@ import CoreEmotion from './sections/CoreEmotion'
 import LoginModal from './components/LoginModal'
 import EmotionCheckModal from './components/EmotionCheckModal'
 import SafeExitButton from './components/SafeExitButton'
+import JournalModal from './components/JournalModal' // new Journal import
 
 export default function App() {
   const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') // login | emotion | signup
   const [showSafePopup, setShowSafePopup] = useState(true)
+  const [showJournal, setShowJournal] = useState(false) // new Journal modal
 
   const handleSafeContinue = () => {
     setShowSafePopup(false)
@@ -71,6 +73,30 @@ export default function App() {
         <EmotionCheckModal
           show={showModal}
           onClose={() => setShowModal(false)}
+        />
+      )}
+
+      {/*  Journal modal */}
+      {showJournal && (
+        <JournalModal
+          show={showJournal}
+          onClose={() => setShowJournal(false)}
+          onSave={async (entry) => {
+            try {
+              const res = await fetch('http://localhost:8000/journal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ...entry,
+                  user_id: 'TEMP_USER', // replace with real user later
+                  timeStamp: Date.now(),
+                }),
+              })
+              return res.json()
+            } catch (err) {
+              console.error('Failed to save journal', err)
+            }
+          }}
         />
       )}
     </div>
