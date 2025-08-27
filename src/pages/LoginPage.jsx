@@ -1,14 +1,17 @@
 // src/pages/LoginPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SafeExitButton from '../components/SafeExitButton';
 import api from "../scripts/api"; // Adjust the import path as necessary
+import { LoginContext } from '../App';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { setIsLoggedIn } = useContext(LoginContext);
 
   const handleLogin = async () => {
     try {
@@ -17,6 +20,7 @@ export default function LoginPage() {
         password
       });
       localStorage.setItem('token', response.data.token); // Store token if needed
+      setIsLoggedIn(true);
       navigate("/chat");
     } catch (error) {
       console.error("Error logging in:", error);

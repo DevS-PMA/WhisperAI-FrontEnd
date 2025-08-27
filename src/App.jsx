@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import HeroSection from './sections/HeroSection'
@@ -13,10 +13,14 @@ import ChatPage from './pages/ChatPage'
 import SignInPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 
+export const LoginContext = createContext()
+
 export default function App() {
   const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') 
   const [showSafePopup, setShowSafePopup] = useState(true)
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const navigate = useNavigate()
 
@@ -51,39 +55,40 @@ export default function App() {
       <div id="main-content" className="pt-20 relative z-10">
         <Navbar
           onLoginClick={() => {
-            navigate("/login")
+            navigate("/login");
           }}
           onChatClick={() => {
             navigate("/chat");
           }}
         />
-
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <HeroSection />
-                <WhisperInput />
-                <TrustSection />
-                <FeatureCards />
-                <CoreEmotion />
-              </>
-            }
-          />
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/login" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-        </Routes>
+        <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <HeroSection />
+                  <WhisperInput />
+                  <TrustSection />
+                  <FeatureCards />
+                  <CoreEmotion />
+                </>
+              }
+            />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/login" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+          </Routes>
+        </LoginContext.Provider>
       </div>
 
       {/*  Emotion modal */}
-      {mode === 'emotion' && (
+      {mode === "emotion" && (
         <EmotionCheckModal
           show={showModal}
           onClose={() => setShowModal(false)}
         />
       )}
     </div>
-  )
+  );
 }

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import SafeExitButton from '../components/SafeExitButton'
 import { Mic } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
 import api from '../scripts/api' 
+import { LoginContext } from '../App'
 
 
 export default function ChatPage() {
@@ -22,6 +23,7 @@ export default function ChatPage() {
 
   const [chatHistory, setChatHistory] = useState([])
 
+  const { isLoggedIn } = useContext(LoginContext)
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -41,14 +43,27 @@ export default function ChatPage() {
     if (input.trim()) {
       setMessages([...messages, { role: 'user', message: input }])
       setInput('')
-      const response = await api.post('/chat/chat', { 
-        role: 'user',
-        message: input,
-        thread_id: threadId,
-        title: title,
-        timeStamp:  Date.now() / 1000,
-        newThread: newThread
-      })
+      let response
+      console.log(localStorage.getItem('token'))
+      if(!isLoggedIn){
+        response = await api.post('/chat/anonymous', { 
+          role: 'user',
+          message: input,
+          thread_id: threadId,
+          title: title,
+          timeStamp:  Date.now() / 1000,
+          newThread: newThread
+        })
+      }else{
+        response = await api.post('/chat/chat', { 
+          role: 'user',
+          message: input,
+          thread_id: threadId,
+          title: title,
+          timeStamp:  Date.now() / 1000,
+          newThread: newThread
+        })
+     }
       setThreadId(response.data.thread_id)
       setTitle(response.data.title)
       setNewThread(false)
