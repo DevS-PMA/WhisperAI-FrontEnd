@@ -7,7 +7,6 @@ import SafePopup from './sections/SafePopup'
 import TrustSection from './sections/TrustSection'
 import FeatureCards from './sections/FeatureCards'
 import CoreEmotion from './sections/CoreEmotion'
-import EmotionCheckModal from './components/EmotionCheckModal'
 import SafeExitButton from './components/SafeExitButton'
 import ChatPage from './pages/ChatPage'
 import SignInPage from './pages/LoginPage'
@@ -16,7 +15,6 @@ import SignUpPage from './pages/SignUpPage'
 export const LoginContext = createContext()
 
 export default function App() {
-  const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') 
   const [showSafePopup, setShowSafePopup] = useState(true)
 
@@ -27,7 +25,6 @@ export default function App() {
   const handleSafeContinue = () => {
     setShowSafePopup(false)
     setMode('emotion')
-    setShowModal(true)
   }
 
   useEffect(() => {
