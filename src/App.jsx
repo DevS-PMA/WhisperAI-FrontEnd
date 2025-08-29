@@ -15,7 +15,7 @@ export default function App() {
   const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState('login') // login | emotion | signup
   const [showSafePopup, setShowSafePopup] = useState(true)
-  const [showJournal, setShowJournal] = useState(false) // new Journal modal
+  const [showJournal, setShowJournal] = useState(true) // new Journal modal
 
   const handleSafeContinue = () => {
     setShowSafePopup(false)
