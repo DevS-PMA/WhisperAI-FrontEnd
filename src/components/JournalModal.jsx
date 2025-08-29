@@ -1,31 +1,23 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { X, Mic } from 'lucide-react'
 
 export default function JournalModal({ show, onClose, onSave }) {
-  const [fields, setFields] = useState({
-    field1: '',
-    field2: '',
-    field3: '',
-    field4: '',
-  })
+  const [entry, setEntry] = useState("")
 
   useEffect(() => {
-    document.body.style.overflow = show ? 'hidden' : 'auto'
+    document.body.style.overflow = show ? "hidden" : "auto"
     return () => {
-      document.body.style.overflow = 'auto'
+      document.body.style.overflow = "auto"
     }
   }, [show])
 
   if (!show) return null
 
-  const handleChange = (e) => {
-    setFields({ ...fields, [e.target.name]: e.target.value })
-  }
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSave?.(fields) // safe call if provided
+    if (entry.trim() === "") return
+    onSave?.({ text: entry })
     onClose()
   }
 
@@ -35,7 +27,7 @@ export default function JournalModal({ show, onClose, onSave }) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
-        className="relative w-[90%] max-w-md rounded-xl bg-white border border-[#e1bfc4] shadow-[0_0_15px_rgba(213,152,163,0.5)] p-6"
+        className="relative w-[95%] max-w-lg rounded-xl bg-white border border-[#e1bfc4] shadow-[0_0_15px_rgba(213,152,163,0.5)] p-6"
       >
         {/* Close Button */}
         <button
@@ -47,25 +39,42 @@ export default function JournalModal({ show, onClose, onSave }) {
 
         <h2 className="text-xl font-bold text-center mb-4">New Journal Entry</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {['field1', 'field2', 'field3', 'field4'].map((field, i) => (
-            <input
-              key={field}
-              type="text"
-              name={field}
-              placeholder={`Note ${i + 1}`}
-              value={fields[field]}
-              onChange={handleChange}
-              className="w-full border border-pink-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
-            />
-          ))}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Large Textarea */}
+          <textarea
+            rows={8}
+            value={entry}
+            onChange={(e) => setEntry(e.target.value)}
+            placeholder="Write freely here... Your thoughts are safe and private."
+            className="w-full border border-pink-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
 
-          <button
-            type="submit"
-            className="w-full mt-4 bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-black font-semibold py-2 rounded-md shadow hover:opacity-90"
-          >
-            Save Entry
-          </button>
+          {/* Journaling Tips */}
+          <div className="text-sm text-gray-500 space-y-1">
+            <p>• Write without judgement</p>
+            <p>• Focus on your feelings</p>
+            <p>• Be kind to yourself</p>
+            <p>• There’s no right way</p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-between items-center pt-3">
+            {/* Mic Button (for voice journaling) */}
+            <button
+              type="button"
+              className="p-3 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600"
+            >
+              <Mic size={20} />
+            </button>
+
+            {/* Save Button */}
+            <button
+              type="submit"
+              className="px-6 py-2 bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-black font-semibold rounded-md shadow hover:opacity-90"
+            >
+              Save Entry
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>
