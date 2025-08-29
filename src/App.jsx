@@ -79,13 +79,7 @@ export default function App() {
         </LoginContext.Provider>
       </div>
 
-      {/*  Emotion modal */}
-      {mode === "emotion" && (
-        <EmotionCheckModal
-          show={showModal}
-          onClose={() => setShowModal(false)}
-        />
-      )}
+      
     </div>
   );
 }
