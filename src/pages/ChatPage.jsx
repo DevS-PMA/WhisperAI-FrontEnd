@@ -4,7 +4,7 @@ import { Mic } from 'lucide-react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
 import api from '../scripts/api' 
-import { LoginContext } from '../App'
+import { LoginContext } from '../App.jsx'
 
 
 export default function ChatPage() {
