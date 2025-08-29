@@ -38,13 +38,7 @@ export default function WhisperInput() {
   ]
 
   const useSuggestion = (text) => {
-    setQuestion((prev) => {
-      if (selectedEmotion) {
-        // Merge the selected emotion with the suggestion, not just replace
-        return `${text}`
-      }
-      return text
-    })
+    setQuestion(text)
     setShowSuggestions(false)
     inputRef.current?.focus()
   }
@@ -83,13 +77,33 @@ export default function WhisperInput() {
             placeholder="You can whisper anything here..."
             className="flex-1 px-4 py-2 outline-none text-sm md:text-base bg-transparent"
             value={
-              selectedEmotion
+              selectedEmotion && question
                 ? `I am ${selectedEmotion}, ${question}`
-                : question
+                : selectedEmotion
+                  ? `I am ${selectedEmotion}`
+                  : question
             }
             onChange={(e) => {
-              const newText = e.target.value.replace(`I am ${selectedEmotion}, `, '').trimStart()
-              setQuestion(newText)
+              const raw = e.target.value;
+              const emotionPrefix = selectedEmotion ? `I am ${selectedEmotion}` : '';
+              const fullPrefix = selectedEmotion && question ? `${emotionPrefix}, ` : emotionPrefix;
+              
+              if (!raw.startsWith(fullPrefix)) {
+                // User removed part of the prefix
+                if (raw === '') {
+                  setSelectedEmotion('');
+                  setEmotionText('');
+                  setQuestion('');
+                } else {
+                  setQuestion(raw);
+                  setSelectedEmotion('');
+                  setEmotionText('');
+                }
+                return;
+              }
+
+              const remaining = raw.slice(fullPrefix.length).trimStart();
+              setQuestion(remaining);
             }}
             onFocus={() => setShowSuggestions(true)}
           />
