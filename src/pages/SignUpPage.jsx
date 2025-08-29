@@ -39,7 +39,7 @@ export default function SignUpPage() {
 
       {/*  Navbar stays at top */}
       <div className="pt-16"> {/* add padding to prevent overlap */}
-        <Navbar onLoginClick={() => {}} />
+        
 
         <div className="flex justify-center items-start md:items-center px-4 py-12">
           <div className="bg-white w-full max-w-sm rounded-xl shadow-lg p-6 border border-pink-200">

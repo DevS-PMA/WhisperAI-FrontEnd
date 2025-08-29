@@ -90,15 +90,16 @@ const resetNoVoiceTimeout = () => {
   setNoVoiceTimeout(timeout);
 };
 
-  const handleSend = async () => {
-    if (input.trim()) {
-      setMessages([...messages, { role: 'user', message: input }])
+  const handleSend = async (customInput) => {
+    const messageToSend = customInput || input;
+    if (messageToSend.trim()) {
+      setMessages([...messages, { role: 'user', message: messageToSend }])
       setInput('')
       let response
       if(!isLoggedIn){
         response = await api.post('/chat/anonymous', { 
           role: 'user',
-          message: input,
+          message: messageToSend,
           thread_id: threadId,
           title: title,
           timeStamp:  Date.now() / 1000,
@@ -107,7 +108,7 @@ const resetNoVoiceTimeout = () => {
       }else{
         response = await api.post('/chat/chat', { 
           role: 'user',
-          message: input,
+          message: messageToSend,
           thread_id: threadId,
           title: title,
           timeStamp:  Date.now() / 1000,
@@ -120,6 +121,13 @@ const resetNoVoiceTimeout = () => {
       setMessages((prev) => [...prev, { role: 'whisper', message: response.data.message }])
     }
   }
+
+useEffect(() => {
+  if (initialMessage) {
+    setInput(initialMessage);
+    handleSend(initialMessage); // Move handleSend call here directly
+  }
+}, [initialMessage]);
 
   return (
     <div className="min-h-screen bg-[#fffaf9] text-[#4a2f2f] relative">

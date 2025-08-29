@@ -35,7 +35,7 @@ export default function LoginPage() {
 
       {/* Add padding so navbar is below SafeExitButton */}
       <div className="pt-16">
-        <Navbar onLoginClick={() => {}} />
+        
 
         <div className="flex justify-center items-start md:items-center px-4 py-12">
          <div className="bg-white w-full max-w-sm rounded-xl shadow-lg p-6 border border-pink-200">
