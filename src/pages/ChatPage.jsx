@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 import SafeExitButton from '../components/SafeExitButton'
+import VoiceDots from '../components/VoiceDots';
 import { Mic } from 'lucide-react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
@@ -17,11 +18,12 @@ export default function ChatPage() {
   ])
 
   const [input, setInput] = useState('')
-  const [open, setOpen] = useState({ myChat: true })
+  const [open, setOpen] = useState({ myChat: true, journaling: false })
   const recognitionRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const [noVoiceTimeout, setNoVoiceTimeout] = useState(null);
   const [noVoiceDetected, setNoVoiceDetected] = useState(false);
+  const [showJournal, setShowJournal] = useState(false);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -129,6 +131,30 @@ useEffect(() => {
   }
 }, [initialMessage]);
 
+useEffect(() => {
+  const isNew = queryParams.get('new');
+  if (isNew) {
+    setMessages([]); // clear chat
+    setInput('');
+    setShowJournal(false);
+  }
+}, [location.search]);
+
+// Journal mode effect: show journal UI when ?mode=journal is in the URL, only on /chat page
+useEffect(() => {
+  const isJournalMode = queryParams.get('mode') === 'journal';
+  const isChatPage = location.pathname === '/chat';
+  if (isChatPage) {
+    if (isJournalMode) {
+      setShowJournal(true);
+      setOpen({ myChat: false, journaling: true });
+    } else {
+      setShowJournal(false);
+      setOpen({ myChat: true, journaling: false });
+    }
+  }
+}, [location.pathname, location.search]);
+
   return (
     <div className="min-h-screen bg-[#fffaf9] text-[#4a2f2f] relative">
       {/*  Fixed SafeExit button */}
@@ -136,19 +162,23 @@ useEffect(() => {
         <SafeExitButton />
       </div>
 
-      <div className="flex pt-20">
+      <div className="flex pt-0">
         {/* Sidebar */}
         <aside className="w-[260px] min-h-screen bg-[#f2dbdb] p-6 hidden md:flex flex-col justify-between">
   {/* Top menu */}
   <div>
-    <Link to="/" className="text-3xl font-[cursive] mb-6 hover:underline">
+    <Link to="/" className="text-4xl font-[cursive] mb-6 hover:underline">
       Whisper Ai
     </Link>
 
     {/* My Chat (collapsible) */}
     <button
-      onClick={() => setOpen(o => ({ ...o, myChat: !o.myChat }))}
-      className="w-full flex items-center justify-between text-left text-[#d77474] font-semibold mb-2"
+      onClick={() => setOpen(o => ({ myChat: !o.myChat, journaling: false }))}
+      className={`w-full flex items-center justify-between text-left mb-2 ${
+        open.myChat
+          ? 'text-[#4a2f2f] font-bold'
+          : 'text-[#4a2f2f] font-normal'
+      } text-[18px] md:text-[20px]`}
     >
       <span className="flex items-center gap-2">
         <ExternalLink size={18} />
@@ -159,10 +189,14 @@ useEffect(() => {
 
     {/* Sub-items */}
     {open.myChat && (
-      <ul className="ml-6 mb-4 space-y-2 text-sm">
+      <ul className="ml-6 mb-4 space-y-2 text-[16px] md:text-[18px]">
         <li>
           <NavLink
-            to="/chat" // or /chat/new if you later route it
+            to="/chat?new=true"
+            onClick={() => {
+              setOpen((prev) => ({ ...prev, myChat: true, journaling: false }));
+              setShowJournal(false);
+            }}
             className="flex items-center gap-2 hover:underline"
           >
             <PlusSquare size={16} />
@@ -172,6 +206,10 @@ useEffect(() => {
         <li>
           <NavLink
             to="/chat" // or /chat/history
+            onClick={() => {
+              setOpen((prev) => ({ ...prev, myChat: true, journaling: false }));
+              setShowJournal(false);
+            }}
             className="flex items-center gap-2 hover:underline"
           >
             <History size={16} />
@@ -179,16 +217,63 @@ useEffect(() => {
           </NavLink>
           {/* Example of a small dated item under history */}
           
-          <div className="ml-6 mt-1 text-xs text-gray-600">8-8-2025</div>
+          <div className="ml-6 mt-1 text-[13px] text-gray-600">8-8-2025</div>
         </li>
       </ul>
     )}
 
     {/* Other top-level links */}
-    <ul className="space-y-4 text-sm">
-      <li className="flex items-center gap-2">
-        <NotebookPen size={18} />
-        <span>Journaling</span>
+    <ul className="space-y-4 text-[18px] md:text-[20px]">
+      <li>
+        <button
+          onClick={() => setOpen(o => ({ myChat: false, journaling: !o.journaling }))}
+          className={`w-full flex items-center justify-between text-left mb-2 ${
+            open.journaling
+              ? 'text-[#4a2f2f] font-bold'
+              : 'text-[#4a2f2f] font-normal'
+          } text-[18px] md:text-[20px]`}
+        >
+          <span className="flex items-center gap-2">
+            <NotebookPen size={18} />
+            Journaling
+          </span>
+          {open.journaling ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+        </button>
+
+        {open.journaling && (
+          <ul className="ml-6 mt-2 space-y-2 text-[16px] md:text-[18px] text-[#874d4d]">
+            <li className="flex items-center gap-2">
+              <PlusSquare size={16} />
+              <NavLink
+                to="/chat?mode=journal"
+                onClick={() => {
+                  setOpen((prev) => ({ ...prev, myChat: false, journaling: true }));
+                  setShowJournal(true);
+                }}
+                className="hover:underline"
+              >
+                New journal
+              </NavLink>
+            </li>
+            <li className="flex items-center gap-2">
+              <History size={16} />
+              <NavLink
+                to="/chat?mode=journal"
+                onClick={() => {
+                  setOpen((prev) => ({ ...prev, myChat: false, journaling: true }));
+                  setShowJournal(true);
+                }}
+                className="hover:underline"
+              >
+                Journal History
+              </NavLink>
+            </li>
+            <ul className="ml-4 mt-1 space-y-1 text-[13px] text-gray-500">
+              <li>▣ 8–8–2025</li>
+              <li>▣ 7–8–2025</li>
+            </ul>
+          </ul>
+        )}
       </li>
       <li className="flex items-center gap-2">
         <Shield size={18} />
@@ -214,72 +299,129 @@ useEffect(() => {
 
 
         {/* Chat Content */}
-        <main className="flex-1 p-6">
-          <p className="text-center text-sm mb-4">
-      Anonymous chats are erased when you exit. Want to save them?{' '}
-      <Link
-        to="/signup"
-        className="text-[#d77474] underline cursor-pointer"
-      >
-        Sign up here
-      </Link>
-    </p>
-          <h1 className="text-xl font-semibold mb-6 text-center">
-            Welcome. You can talk to me about anything.<br />
-            What’s on your mind today?
-          </h1>
+        <main className="flex-1 p-6 pt-6">
+          {!showJournal && (
+            <>
+              <h1 className="text-xl font-semibold mb-6 text-center">
+                Welcome. You can talk to me about anything.<br />
+                What’s on your mind today?
+              </h1>
 
-          {/* Chat Messages */}
-          <div className="space-y-3 max-w-xl mx-auto">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`p-3 rounded-md w-fit max-w-[80%] text-sm ${
-                  msg.sender === 'user' ? 'ml-auto bg-[#e5bcbc]' : 'bg-[#f7f7f7]'
-                }`}
-              >
-                {msg.text}
+              <div className="space-y-3 max-w-xl mx-auto">
+                {messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-3 rounded-md w-fit max-w-[80%] text-sm ${
+                      msg.sender === 'user' ? 'ml-auto bg-[#e5bcbc]' : 'bg-[#f7f7f7]'
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
 
-          {/* Input Area */}
-          <div className="mt-10 max-w-xl mx-auto relative">
-            <div className="relative flex items-center bg-[#fefefe] border border-[#e6cfcf] rounded-full px-4 py-2">
-              <button className="text-[#a07c84] text-xl mr-2">➕</button>
-              <button className="text-[#a07c84] text-xl mr-4">🎛️</button>
-              <input
-                type="text"
-                placeholder="You can whisper anything here..."
-                className="flex-1 outline-none placeholder:text-gray-500 bg-transparent"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-              <button
-                onClick={recording ? stopRecording : startRecording}
-                className={`text-[#4a2f2f] text-xl mr-3 ${recording ? 'animate-pulse' : ''}`}
-                title={recording ? 'Stop Recording' : 'Start Recording'}
-              >
-                <Mic size={18} />
-                {recording && <span className="ml-1 text-red-500 text-xs">●</span>}
-              </button>
-              <button
-                onClick={handleSend}
-                className="px-4 py-2 bg-gradient-to-r from-pink-300 to-pink-400 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                Whisper
-              </button>
-            </div>
-            {noVoiceDetected && (
-              <p className="text-center text-xs text-red-500 mt-2">
-                No voice detected for 10 seconds. Stopped recording.
+          {!showJournal && (
+            <div className="mt-10 max-w-xl mx-auto relative">
+              <div className="relative flex items-center bg-[#fefefe] border border-[#e6cfcf] rounded-full px-4 py-2">
+                <button className="text-[#a07c84] text-xl mr-2">➕</button>
+                <button className="text-[#a07c84] text-xl mr-4">🎛️</button>
+                <input
+                  type="text"
+                  placeholder="You can whisper anything here..."
+                  className="flex-1 outline-none placeholder:text-gray-500 bg-transparent"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
+                <button
+                  onClick={recording ? stopRecording : startRecording}
+                  className={`text-[#4a2f2f] text-xl mr-3 ${recording ? 'animate-pulse' : ''}`}
+                  title={recording ? 'Stop Recording' : 'Start Recording'}
+                >
+                  <Mic size={18} />
+                  {recording && <span className="ml-1 text-red-500 text-xs">●</span>}
+                </button>
+                <button
+                  onClick={handleSend}
+                  className="px-4 py-2 bg-gradient-to-r from-pink-300 to-pink-400 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  Whisper
+                </button>
+              </div>
+              {noVoiceDetected && (
+                <p className="text-center text-xs text-red-500 mt-2">
+                  No voice detected for 10 seconds. Stopped recording.
+                </p>
+              )}
+              <p className="text-center text-xs text-gray-500 mt-4">
+                Mistakes can happen — even with Whisper. See our{' '}
+                <span className="underline">terms of Use</span>
               </p>
-            )}
-            <p className="text-center text-xs text-gray-500 mt-4">
-              Mistakes can happen — even with Whisper. See our{' '}
-              <span className="underline">terms of Use</span>
-            </p>
-          </div>
+            </div>
+          )}
+
+          {showJournal && (
+            <section id="journal" className="mt-4 max-w-3xl mx-auto bg-[#fefcfc] p-8 rounded-xl text-[#4a2f2f]">
+              <p className="text-sm text-center mb-4">
+                Anonymous Journals are erased when you exit. Want to save them?{' '}
+                <Link to="/signup" className="text-[#b87373] underline">Sign up here</Link>
+              </p>
+              <h2 className="text-xl font-semibold mb-4 text-center">Today's gentle prompt:</h2>
+              <p className="italic text-center text-gray-700 mb-4">
+                How am I feeling right now, and what might be causing these emotions?
+              </p>
+
+              <div className="bg-[#f9f7f7] border border-[#e4cfcf] rounded-xl p-6">
+                <textarea
+                  className="w-full h-32 bg-transparent text-gray-800 text-sm focus:outline-none resize-none mb-4 border border-[#e4cfcf] rounded"
+                  placeholder="Write/Speak freely here... Your thoughts are safe and private. There’s no right or wrong way to journal."
+                ></textarea>
+
+                <div className="text-xs text-gray-500 space-y-1 mb-6">
+                  <p>. Write without Judgement</p>
+                  <p>. Focus on your feelings</p>
+                  <p>. Be kind to yourself</p>
+                  <p>. There’s no right way</p>
+                </div>
+
+                <hr className="border-[#d8a9a9] mb-6" />
+
+                <div className="grid gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Something that made me smile today…</label>
+                    <textarea className="w-full border border-[#e4cfcf] rounded p-2" rows={3}></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Currently dealing with...</label>
+                    <textarea className="w-full border border-[#e4cfcf] rounded p-2" rows={3}></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Thankful for...</label>
+                    <textarea className="w-full border border-[#e4cfcf] rounded p-2" rows={3}></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Looking forward to...</label>
+                    <textarea className="w-full border border-[#e4cfcf] rounded p-2" rows={3}></textarea>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-center">
+                  <button
+                    className="rounded-full bg-[#f3dede] p-4 flex items-center justify-center w-14 h-14"
+                    onClick={recording ? stopRecording : startRecording}
+                    title={recording ? "Stop Recording" : "Start Recording"}
+                  >
+                    {recording ? <VoiceDots /> : <Mic className="text-[#944c4c]" size={22} />}
+                  </button>
+                </div>
+
+                <p className="mt-4 text-xs text-center text-gray-500">
+                  Your entries are stored securely and privately. Take your time. Every feeling is valid and worth acknowledging.
+                </p>
+              </div>
+            </section>
+          )}
         </main>
       </div>
     </div>
