@@ -12,6 +12,7 @@ import ChatPage from './pages/ChatPage'
 import SignInPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 
+
 export const LoginContext = createContext()
 
 export default function App() {
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/login" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            
           </Routes>
         </LoginContext.Provider>
       </div>
