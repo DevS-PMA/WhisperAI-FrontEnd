@@ -24,6 +24,9 @@ export default function ChatPage() {
   const [noVoiceTimeout, setNoVoiceTimeout] = useState(null);
   const [noVoiceDetected, setNoVoiceDetected] = useState(false);
   const [showJournal, setShowJournal] = useState(false);
+  // Journal input state and ref
+  const [journalInput, setJournalInput] = useState('');
+  const journalRef = useRef(null);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -53,11 +56,25 @@ useEffect(() => {
     recognitionRef.current = recog;
 
     recog.onresult = (event) => {
-      let transcript = '';
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        transcript += event.results[i][0].transcript;
+      const activeEl = document.activeElement;
+      const result = event.results[event.resultIndex];
+      // Only use transcript if result is final to prevent duplication
+      const transcript = result.isFinal ? result[0].transcript : '';
+
+      if (activeEl && activeEl.tagName === 'TEXTAREA') {
+        const start = activeEl.selectionStart;
+        const end = activeEl.selectionEnd;
+        const value = activeEl.value;
+        if (transcript) {
+          const newValue = value.slice(0, start) + transcript + value.slice(end);
+          activeEl.value = newValue;
+          activeEl.selectionStart = activeEl.selectionEnd = start + transcript.length;
+          activeEl.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      } else if (transcript && !showJournal) {
+        setInput(prev => prev + transcript);
       }
-      setInput(transcript);
+
       resetNoVoiceTimeout();
     };
 
@@ -327,12 +344,12 @@ useEffect(() => {
               <div className="relative flex items-center bg-[#fefefe] border border-[#e6cfcf] rounded-full px-4 py-2">
                 <button className="text-[#a07c84] text-xl mr-2">➕</button>
                 <button className="text-[#a07c84] text-xl mr-4">🎛️</button>
-                <input
-                  type="text"
+                <textarea
                   placeholder="You can whisper anything here..."
-                  className="flex-1 outline-none placeholder:text-gray-500 bg-transparent"
+                  className="flex-1 outline-none placeholder:text-gray-500 bg-transparent resize-none overflow-y-auto max-h-40"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
+                  rows={1}
                 />
                 <button
                   onClick={recording ? stopRecording : startRecording}
@@ -373,10 +390,15 @@ useEffect(() => {
               </p>
 
               <div className="bg-[#f9f7f7] border border-[#e4cfcf] rounded-xl p-6">
-                <textarea
-                  className="w-full h-32 bg-transparent text-gray-800 text-sm focus:outline-none resize-none mb-4 border border-[#e4cfcf] rounded"
-                  placeholder="Write/Speak freely here... Your thoughts are safe and private. There’s no right or wrong way to journal."
-                ></textarea>
+                <div>
+                  <textarea
+                    ref={journalRef}
+                    value={journalInput}
+                    onChange={(e) => setJournalInput(e.target.value)}
+                    className="w-full border border-[#e4cfcf] rounded p-2 resize-none"
+                    placeholder="Write/Speak freely here... Your thoughts are safe and private. There’s no right or wrong way to journal."
+                  ></textarea>
+                </div>
 
                 <div className="text-xs text-gray-500 space-y-1 mb-6">
                   <p>. Write without Judgement</p>
