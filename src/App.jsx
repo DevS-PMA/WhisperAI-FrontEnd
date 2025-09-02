@@ -12,10 +12,15 @@ import ChatPage from './pages/ChatPage'
 import SignInPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 
+<<<<<<< Updated upstream
+
+export const LoginContext = createContext()
+=======
 export const LoginContext = createContext({
   isLoggedIn: false,
   setIsLoggedIn: () => {}
 })
+>>>>>>> Stashed changes
 
 export default function App() {
   const [mode, setMode] = useState('login') 
