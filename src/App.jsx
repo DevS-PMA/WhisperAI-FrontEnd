@@ -58,15 +58,15 @@ export default function App() {
 
       {/*  Main site content, pushed down a bit */}
       <div id="main-content" className="pt-20 relative z-10">
-        <Navbar
-          onLoginClick={() => {
-            navigate("/login");
-          }}
-          onChatClick={() => {
-            navigate("/chat");
-          }}
-        />
         <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+          <Navbar
+            onLoginClick={() => {
+              navigate("/login");
+            }}
+            onChatClick={() => {
+              navigate("/chat");
+            }}
+          />
           <Routes>
             <Route
               path="/"

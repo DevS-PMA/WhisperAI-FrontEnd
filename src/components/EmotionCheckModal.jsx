@@ -4,12 +4,12 @@ import { X } from 'lucide-react'
 import cookies from 'js-cookie'
 
 const emotions = [
-  { label: 'Happy', emoji: '🙂' },
-  { label: 'Calm', emoji: '😌' },
-  { label: 'Anxious', emoji: '😟' },
-  { label: 'Angry', emoji: '😠' },
-  { label: 'Sad', emoji: '🙁' }, 
-  { label: 'Unsafe', emoji: '😧' },
+  { label: 'Happy', emoji: '🙂', prompt: 'I am feeling Happy' },
+  { label: 'Calm', emoji: '😌', prompt: 'I am feeling Calm' },
+  { label: 'Anxious', emoji: '😟', prompt: 'I am feeling Anxious today' },
+  { label: 'Angry', emoji: '😠', prompt: 'I feel Angry today' },
+  { label: 'Sad', emoji: '🙁', prompt: 'I am feeling Sad' },
+  { label: 'Unsafe', emoji: '😧', prompt: 'I feel Unsafe today' },
 ]
 
 export default function EmotionCheckModal({ show, onClose }) {
