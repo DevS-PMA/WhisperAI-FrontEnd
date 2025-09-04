@@ -48,10 +48,10 @@ export default function EmotionCheckModal({ show, onClose }) {
           {emotions.map((emotion) => (
             <button
               key={emotion.label}
-              onClick={() => setSelectedEmotion(emotion.label)}
+              onClick={() => setSelectedEmotion(emotion)}
               className={`w-[60px] h-[70px] border rounded-xl px-2 py-1 flex flex-col items-center justify-center text-sm transition 
                 ${
-                  selectedEmotion === emotion.label
+                  selectedEmotion?.label === emotion.label
                     ? 'border-[#cc8d9b] bg-[#fae9ec]'
                     : 'border-black/40 bg-white'
                 }`}
@@ -63,15 +63,16 @@ export default function EmotionCheckModal({ show, onClose }) {
         </div>
 
         <button
-          disabled={!selectedEmotion}
+          disabled={!selectedEmotion?.prompt}
           className={`w-full py-2 rounded-lg font-medium transition ${
-            selectedEmotion
+            selectedEmotion?.prompt
               ? 'bg-[#d598a3] text-white hover:bg-[#bf7d8a]'
               : 'bg-gray-200 text-gray-500 cursor-not-allowed'
           }`}
           onClick={() => {
-            cookies.set('selectedEmotion', selectedEmotion, { expires: 1 })
-            onClose()
+            cookies.set('selectedEmotion', selectedEmotion.prompt, { expires: 1 });
+            window.dispatchEvent(new CustomEvent('emotion-selected', { detail: selectedEmotion.prompt }));
+            onClose();
           }}
         >
           Continue
