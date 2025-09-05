@@ -1,3 +1,4 @@
+// Navbar.jsx
 import { useNavigate, useLocation } from 'react-router-dom';
 <<<<<<< Updated upstream
 import { useEffect, useState } from 'react';
@@ -6,13 +7,15 @@ import { useEffect, useState, useContext } from 'react';
 import SettingsModal from './SettingsModal'; // <- import it
 import { LoginContext } from '../App';
 >>>>>>> Stashed changes
+import SettingsModal from './SettingsModal'; // <- import it
 
 export default function Navbar({ onLoginClick }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);       // dropdown
+  const [settingsOpen, setSettingsOpen] = useState(false); // NEW: modal
 
-<<<<<<< Updated upstream
 useEffect(() => {
   if (location.pathname === '/' || location.pathname === '/home') {
     setActiveTab('');
@@ -21,24 +24,6 @@ useEffect(() => {
     if (location.search.includes('mode=journal')) {
       setActiveTab('journal');
       window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'journal' } }));
-=======
-  const loginContext = useContext(LoginContext) || {};
-  const { loggedIn, userEmail } = loginContext;
-  const userInitial = userEmail ? userEmail[0].toUpperCase() : 'U';
-
-  useEffect(() => {
-    if (location.pathname === '/' || location.pathname === '/home') {
-      setActiveTab('');
-      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: '' } }));
-    } else if (location.pathname.includes('/chat')) {
-      if (location.search.includes('mode=journal')) {
-        setActiveTab('journal');
-        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'journal' } }));
-      } else {
-        setActiveTab('chat');
-        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
-      }
->>>>>>> Stashed changes
     } else {
       setActiveTab('chat');
       window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
@@ -50,6 +35,8 @@ useEffect(() => {
 
   const buttonBaseStyle = 'hover:text-[#b87777] transition-colors duration-200';
   const activeStyle = 'text-[#b87777] font-bold';
+
+  const demoInitial = 'D'; // show avatar even before login
 
   return (
     <header className="w-full flex justify-between items-center px-6 md:px-10 py-4 border-b border-[#d7cfcf] bg-white sticky top-0 z-50">
@@ -67,7 +54,7 @@ useEffect(() => {
           }}
           className={`${buttonBaseStyle} ${activeTab === 'chat' ? activeStyle : ''}`}
         >
-          Chat with Whisper
+          Chat with whisper
         </button>
         <button
           onClick={() => {
@@ -77,14 +64,13 @@ useEffect(() => {
           }}
           className={`${buttonBaseStyle} ${activeTab === 'journal' ? activeStyle : ''}`}
         >
-          Start Journaling
+          Journaling
         </button>
         <a href="#" className={buttonBaseStyle}>Safety Tips</a>
         <a href="#" className={buttonBaseStyle}>Resource Hub</a>
       </nav>
 
       <div className="flex gap-4 items-center">
-<<<<<<< Updated upstream
         <button
           onClick={onLoginClick}
           className="text-[#884b4b] font-semibold hidden sm:block"
@@ -142,6 +128,13 @@ useEffect(() => {
         )}
 >>>>>>> Stashed changes
       </div>
+
+      {/* Render the modal */}
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        email="Diwakar@gmail.com"
+      />
     </header>
   );
 }
