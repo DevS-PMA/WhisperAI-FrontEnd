@@ -6,22 +6,22 @@ export default function Navbar({ onLoginClick }) {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('');
 
-useEffect(() => {
-  if (location.pathname === '/' || location.pathname === '/home') {
-    setActiveTab('');
-    window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: '' } }));
-  } else if (location.pathname.includes('/chat')) {
-    if (location.search.includes('mode=journal')) {
-      setActiveTab('journal');
-      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'journal' } }));
+  useEffect(() => {
+    if (location.pathname === '/' || location.pathname === '/home') {
+      setActiveTab('');
+      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: '' } }));
+    } else if (location.pathname.includes('/chat')) {
+      if (location.search.includes('mode=journal')) {
+        setActiveTab('journal');
+        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'journal' } }));
+      } else {
+        setActiveTab('chat');
+        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
+      }
     } else {
-      setActiveTab('chat');
-      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
+      setActiveTab('');
     }
-  } else {
-    setActiveTab('');
-  }
-}, [location]);
+  }, [location]);
 
   const buttonBaseStyle = 'hover:text-[#b87777] transition-colors duration-200';
   const activeStyle = 'text-[#b87777] font-bold';
