@@ -1,13 +1,8 @@
 // Navbar.jsx
 import { useNavigate, useLocation } from 'react-router-dom';
-<<<<<<< Updated upstream
-import { useEffect, useState } from 'react';
-=======
 import { useEffect, useState, useContext } from 'react';
 import SettingsModal from './SettingsModal'; // <- import it
 import { LoginContext } from '../App';
->>>>>>> Stashed changes
-import SettingsModal from './SettingsModal'; // <- import it
 
 export default function Navbar({ onLoginClick }) {
   const navigate = useNavigate();
@@ -15,6 +10,8 @@ export default function Navbar({ onLoginClick }) {
   const [activeTab, setActiveTab] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);       // dropdown
   const [settingsOpen, setSettingsOpen] = useState(false); // NEW: modal
+
+  const { isLoggedIn } = useContext(LoginContext);
 
 useEffect(() => {
   if (location.pathname === '/' || location.pathname === '/home') {
@@ -77,8 +74,7 @@ useEffect(() => {
         >
           Login
         </button>
-=======
-        {loggedIn ? (
+        {isLoggedIn ? (
           <div className="relative">
             <button
               type="button"
@@ -126,7 +122,6 @@ useEffect(() => {
             Login
           </button>
         )}
->>>>>>> Stashed changes
       </div>
 
       {/* Render the modal */}
