@@ -38,30 +38,30 @@ export default function App() {
   }, [showSafePopup])
 
   return (
-    <div className="bg-[#fefcfc] text-[#4a2f2f] font-sans relative">
-      {/*  Always visible Safe Exit button */}
-      <div className="fixed top-4 right-4 z-[100]">
-        <SafeExitButton />
-      </div>
-
-      {/*  SafePopup modal */}
-      {showSafePopup && (
-        <div className="relative z-50">
-          <SafePopup onContinue={handleSafeContinue} />
+    <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+      <div className="bg-[#fefcfc] text-[#4a2f2f] font-sans relative">
+        {/*  Always visible Safe Exit button */}
+        <div className="fixed top-4 right-4 z-[100]">
+          <SafeExitButton />
         </div>
-      )}
 
-      {/*  Main site content, pushed down a bit */}
-      <div id="main-content" className="pt-20 relative z-10">
-        <Navbar
-          onLoginClick={() => {
-            navigate("/login");
-          }}
-          onChatClick={() => {
-            navigate("/chat");
-          }}
-        />
-        <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+        {/*  SafePopup modal */}
+        {showSafePopup && (
+          <div className="relative z-50">
+            <SafePopup onContinue={handleSafeContinue} />
+          </div>
+        )}
+
+        {/*  Main site content, pushed down a bit */}
+        <div id="main-content" className="pt-20 relative z-10">
+          <Navbar
+            onLoginClick={() => {
+              navigate("/login");
+            }}
+            onChatClick={() => {
+              navigate("/chat");
+            }}
+          />
           <Routes>
             <Route
               path="/"
@@ -78,12 +78,9 @@ export default function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/login" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
-            
           </Routes>
-        </LoginContext.Provider>
+        </div>
       </div>
-
-      
-    </div>
+    </LoginContext.Provider>
   );
 }

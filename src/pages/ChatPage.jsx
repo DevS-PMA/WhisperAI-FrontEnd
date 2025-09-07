@@ -1,12 +1,19 @@
-import { useEffect, useState, useContext, useRef } from 'react'
-import SafeExitButton from '../components/SafeExitButton'
-import VoiceDots from '../components/VoiceDots';
-import { Mic } from 'lucide-react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ChevronDown, ChevronRight, PlusSquare, History, NotebookPen, Shield, ExternalLink } from 'lucide-react'
-import api from '../scripts/api' 
-import { LoginContext } from '../App.jsx'
-
+import { useEffect, useState, useContext, useRef } from "react";
+import SafeExitButton from "../components/SafeExitButton";
+import VoiceDots from "../components/VoiceDots";
+import { Mic } from "lucide-react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import {
+  ChevronDown,
+  ChevronRight,
+  PlusSquare,
+  History,
+  NotebookPen,
+  Shield,
+  ExternalLink,
+} from "lucide-react";
+import api from "../scripts/api";
+import { LoginContext } from "../App.jsx";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([
@@ -15,42 +22,53 @@ export default function ChatPage() {
     // { sender: 'ai', text: `I'm here to help you make sense of your feelings and support your emotional safety.` },
     // { sender: 'ai', text: `This conversation is completely private and will vanish if you leave or use the quick exit.` },
     // { sender: 'user', text: `I don't know if this is abuse, but he keeps controlling who I talk to...` },
-  ])
+  ]);
 
-  const [input, setInput] = useState('')
-  const [open, setOpen] = useState({ myChat: true, journaling: false })
+  const [input, setInput] = useState("");
+  const [open, setOpen] = useState({ myChat: true, journaling: false });
   const recognitionRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const [noVoiceTimeout, setNoVoiceTimeout] = useState(null);
   const [noVoiceDetected, setNoVoiceDetected] = useState(false);
   const [showJournal, setShowJournal] = useState(false);
   // Journal input state and ref
-  const [journalInput, setJournalInput] = useState('');
+  const [journalInput, setJournalInput] = useState("");
   const journalRef = useRef(null);
 
   const [chatHistory, setChatHistory] = useState([]);
   const [threadId, setThreadId] = useState("");
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [newThread, setNewThread] = useState(false);
-
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const initialMessage = queryParams.get('message');
+  const initialMessage = queryParams.get("message");
 
-  const { isLoggedIn } = useContext(LoginContext)
+  const { isLoggedIn } = useContext(LoginContext);
 
   useEffect(() => {
     const fetchChatHistory = async () => {
       try {
-        const response = await api.get('/chat/history')
-        setChatHistory(response.data.chat_history)
+        const response = await api.get("/chat/history");
+        setChatHistory(response.data.chat_history);
       } catch (error) {
-        console.error("Error fetching chat history:", error)
+        console.error("Error fetching chat history:", error);
       }
-    }
-    if(isLoggedIn) fetchChatHistory();
-  }, [])
+    };
+    if (isLoggedIn) fetchChatHistory();
+  }, []);
+
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      try {
+        const response = await api.get("/chat/history");
+        setChatHistory(response.data.chat_history);
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+    if (isLoggedIn) fetchChatHistory();
+  }, [messages, isLoggedIn]);
 
   const handleChatHistory = (chat) => {
     setThreadId(chat.threadId);
@@ -59,16 +77,17 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recog = new SpeechRecognition();
       recog.continuous = true;
       recog.interimResults = true;
-      recog.lang = 'en-US';
+      recog.lang = "en-US";
       recognitionRef.current = recog;
 
       recog.onresult = (event) => {
-        let transcript = '';
+        let transcript = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           transcript += event.results[i][0].transcript;
         }
@@ -110,34 +129,37 @@ export default function ChatPage() {
   const handleSend = async (customInput) => {
     const messageToSend = customInput || input;
     if (messageToSend) {
-      setMessages([...messages, { role: 'user', message: messageToSend }])
-      setInput('')
-      let response
-      if(!isLoggedIn){
-        response = await api.post('/chat/anonymous', { 
-          role: 'user',
+      setMessages([...messages, { role: "user", message: messageToSend }]);
+      setInput("");
+      let response;
+      if (!isLoggedIn) {
+        response = await api.post("/chat/anonymous", {
+          role: "user",
           message: messageToSend,
           thread_id: threadId,
           title: title,
-          timeStamp:  Date.now() / 1000,
-          newThread: newThread
-        })
-      }else{
-        response = await api.post('/chat/chat', { 
-          role: 'user',
+          timeStamp: Date.now() / 1000,
+          newThread: newThread,
+        });
+      } else {
+        response = await api.post("/chat/chat", {
+          role: "user",
           message: messageToSend,
           thread_id: threadId,
           title: title,
-          timeStamp:  Date.now() / 1000,
-          newThread: newThread
-        })
+          timeStamp: Date.now() / 1000,
+          newThread: newThread,
+        });
+      }
+      setThreadId(response.data.thread_id);
+      setTitle(response.data.title);
+      setNewThread(false);
+      setMessages((prev) => [
+        ...prev,
+        { role: "whisper", message: response.data.message },
+      ]);
     }
-      setThreadId(response.data.thread_id)
-      setTitle(response.data.title)
-      setNewThread(false)
-      setMessages((prev) => [...prev, { role: 'whisper', message: response.data.message }])
-    }
-  }
+  };
 
   useEffect(() => {
     if (initialMessage) {
@@ -146,29 +168,29 @@ export default function ChatPage() {
     }
   }, [initialMessage]);
 
-useEffect(() => {
-  const isNew = queryParams.get('new');
-  if (isNew) {
-    setMessages([]); // clear chat
-    setInput('');
-    setShowJournal(false);
-  }
-}, [location.search]);
-
-// Journal mode effect: show journal UI when ?mode=journal is in the URL, only on /chat page
-useEffect(() => {
-  const isJournalMode = queryParams.get('mode') === 'journal';
-  const isChatPage = location.pathname === '/chat';
-  if (isChatPage) {
-    if (isJournalMode) {
-      setShowJournal(true);
-      setOpen({ myChat: false, journaling: true });
-    } else {
+  useEffect(() => {
+    const isNew = queryParams.get("new");
+    if (isNew) {
+      setMessages([]); // clear chat
+      setInput("");
       setShowJournal(false);
-      setOpen({ myChat: true, journaling: false });
     }
-  }
-}, [location.pathname, location.search]);
+  }, [location.search]);
+
+  // Journal mode effect: show journal UI when ?mode=journal is in the URL, only on /chat page
+  useEffect(() => {
+    const isJournalMode = queryParams.get("mode") === "journal";
+    const isChatPage = location.pathname === "/chat";
+    if (isChatPage) {
+      if (isJournalMode) {
+        setShowJournal(true);
+        setOpen({ myChat: false, journaling: true });
+      } else {
+        setShowJournal(false);
+        setOpen({ myChat: true, journaling: false });
+      }
+    }
+  }, [location.pathname, location.search]);
 
   return (
     <div className="min-h-screen bg-[#fffaf9] text-[#4a2f2f] relative">
@@ -211,10 +233,10 @@ useEffect(() => {
                 <li>
                   <button
                     onClick={() => {
-                      setInput('');
+                      setInput("");
                       setMessages([]);
-                      setThreadId('');
-                      setTitle('');
+                      setThreadId("");
+                      setTitle("");
                       setNewThread(true);
                     }}
                     className="flex items-center gap-2 hover:underline"
@@ -232,13 +254,17 @@ useEffect(() => {
                     Chat History
                   </NavLink>
                   {/* Example of a small dated item under history */}
-                  {chatHistory.map((chat) => (
+                  {chatHistory.map((chat, index) => (
                     <div
-                      key={chat.threadId}
+                      key={index}
                       className="ml-6 mt-1 text-xs text-gray-600"
                     >
-                      <button onClick={() => handleChatHistory(chat)} className="text-[#d77474] underline cursor-pointer">
-                        {chat.title}, {new Date(chat.timeStamp * 1000).toLocaleString()}
+                      <button
+                        onClick={() => handleChatHistory(chat)}
+                        className="text-[#d77474] underline cursor-pointer"
+                      >
+                        {chat.title},{" "}
+                        {new Date(chat.timeStamp * 1000).toLocaleString()}
                       </button>
                     </div>
                   ))}
@@ -264,33 +290,38 @@ useEffect(() => {
           </div>
 
           {/* Bottom Login/Sign up */}
-          <div className="pt-8">
-            <Link
-              to="/login"
-              className="block text-[#c88f8f] font-semibold text-lg hover:underline"
-            >
-              Login/Sign up
-            </Link>
-          </div>
+          {
+            !isLoggedIn && (
+              <div className="pt-8">
+                <Link
+                  to="/login"
+                  className="block text-[#c88f8f] font-semibold text-lg hover:underline"
+                >
+                  Login/Sign up
+                </Link>
+              </div>
+            )
+          }
         </aside>
 
         {/* Chat Content */}
         <main className="flex-1 p-6">
-          <p className="text-center text-sm mb-4">
-            Anonymous chats are erased when you exit. Want to save them?{" "}
-            <Link
-              to="/signup"
-              className="text-[#d77474] underline cursor-pointer"
-            >
-              Sign up here
-            </Link>
-          </p>
+          {!isLoggedIn && (
+            <p className="text-center text-sm mb-4">
+              Anonymous chats are erased when you exit. Want to save them?{" "}
+              <Link
+                to="/signup"
+                className="text-[#d77474] underline cursor-pointer"
+              >
+                Sign up here
+              </Link>
+            </p>
+          )}
           <h1 className="text-xl font-semibold mb-6 text-center">
             Welcome. You can talk to me about anything.
             <br />
             What’s on your mind today?
           </h1>
-
           {/* Chat Messages */}
           <div className="space-y-3 max-w-xl mx-auto">
             {messages.map((msg, index) => (
@@ -304,7 +335,6 @@ useEffect(() => {
               </div>
             ))}
           </div>
-          
           {/* Input Area */}
           <div className="mt-10 max-w-xl mx-auto relative">
             <div className="relative flex items-center bg-[#fefefe] border border-[#e6cfcf] rounded-full px-4 py-2">
