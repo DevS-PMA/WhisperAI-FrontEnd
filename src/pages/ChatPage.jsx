@@ -232,6 +232,7 @@ useEffect(() => {
             <History size={16} />
             Chat History
           </NavLink>
+          {/* ---------------------------------------------------------------------------------------------------------------------------- */}
           {/* Example of a small dated item under history */}
           
           <div className="ml-6 mt-1 text-[13px] text-gray-600">8-8-2025</div>

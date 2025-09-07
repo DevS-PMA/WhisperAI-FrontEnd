@@ -1,8 +1,8 @@
 // Navbar.jsx
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import SettingsModal from './SettingsModal'; // <- import it
 import { LoginContext } from '../App';
+import SettingsModal from './SettingsModal';
 
 export default function Navbar({ onLoginClick }) {
   const navigate = useNavigate();
@@ -12,22 +12,23 @@ export default function Navbar({ onLoginClick }) {
   const [settingsOpen, setSettingsOpen] = useState(false); // NEW: modal
 
   const { isLoggedIn } = useContext(LoginContext);
-
-useEffect(() => {
-  if (location.pathname === '/' || location.pathname === '/home') {
-    setActiveTab('');
-    window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: '' } }));
-  } else if (location.pathname.includes('/chat')) {
-    if (location.search.includes('mode=journal')) {
-      setActiveTab('journal');
-      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'journal' } }));
+  
+  useEffect(() => {
+    if (location.pathname === '/' || location.pathname === '/home') {
+      setActiveTab('');
+      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: '' } }));
+    } else if (location.pathname.includes('/chat')) {
+      if (location.search.includes('mode=journal')) {
+        setActiveTab('journal');
+        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'journal' } }));
+      } else {
+        setActiveTab('chat');
+        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
+      }
     } else {
       setActiveTab('chat');
       window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
     }
-  } else {
-    setActiveTab('');
-  }
 }, [location]);
 
   const buttonBaseStyle = 'hover:text-[#b87777] transition-colors duration-200';
