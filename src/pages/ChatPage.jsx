@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import SafeExitButton from "../components/SafeExitButton";
-import VoiceDots from "../components/VoiceDots";
+import VoiceDots from "../components/Voicedots";
 import { Mic } from "lucide-react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
