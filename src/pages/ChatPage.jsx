@@ -208,7 +208,7 @@ export default function ChatPage() {
               to="/"
               className="text-3xl font-[cursive] mb-6 hover:underline"
             >
-              Whisper Ai
+              Kyrah Ai
             </Link>
 
             {/* My Chat (collapsible) */}
@@ -363,7 +363,7 @@ export default function ChatPage() {
                 onClick={() => handleSend(input)}
                 className="px-4 py-2 bg-gradient-to-r from-pink-300 to-pink-400 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Whisper
+                Talk with Kyrah
               </button>
             </div>
             {noVoiceDetected && (
@@ -372,7 +372,7 @@ export default function ChatPage() {
               </p>
             )}
             <p className="text-center text-xs text-gray-500 mt-4">
-              Mistakes can happen — even with Whisper. See our{" "}
+              Mistakes can happen — even with Kyrah. See our{" "}
               <span className="underline">terms of Use</span>
             </p>
           </div>

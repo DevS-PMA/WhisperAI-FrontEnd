@@ -36,15 +36,15 @@ export default function Navbar({ user, onLoginClick }) {
 
   return (
     <header className="w-full flex justify-between items-center px-6 md:px-10 py-4 border-b border-[#d7cfcf] bg-white sticky top-0 z-50">
-      <div className="flex items-center gap-2">
-        <Link to="/whisper-ai">
-          <img src="/logo.webp" alt="Whisper Logo" className="w-8 h-8" />
+      <div className="flex justify-center w-full">
+        <Link to="/Kyrah-AI">
+          <img src="/assets/logo.webp" alt="Kyrah AI" className="h-10 object-contain" />
         </Link>
       </div>
 
       <nav className="hidden md:flex gap-6 text-sm font-medium">
         <button type="button" onClick={() => navigate("/chat")} className="hover:text-[#b87777] transition-colors">
-          Chat with WhisperXXXX
+          Chat with Kyrah AIXXXX
         </button>
         <Link to="/whisper-ai/journal" className="hover:text-[#b87777]">Start Journaling</Link>
         <Link to="/whisper-ai/safety" className="hover:text-[#b87777]">Safety Tips</Link>

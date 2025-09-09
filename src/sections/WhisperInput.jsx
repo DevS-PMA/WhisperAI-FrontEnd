@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { Mic } from 'lucide-react'
 
 const emotions = [
-  { label: 'Happy', emoji: '🙂' },
-  { label: 'Calm', emoji: '😌' },
-  { label: 'Anxious', emoji: '😟' },
-  { label: 'Angry', emoji: '😠' },
-  { label: 'Sad', emoji: '🙁' },
-  { label: 'Unsafe', emoji: '😧' },
+  { label: 'Happy', emoji: '🙂', prompt: 'I am feeling Happy' },
+  { label: 'Calm', emoji: '😌', prompt: 'I am feeling Calm' },
+  { label: 'Anxious', emoji: '😟', prompt: 'I am feeling Anxious today' },
+  { label: 'Angry', emoji: '😠', prompt: 'I feel Angry today' },
+  { label: 'Sad', emoji: '🙁', prompt: 'I am feeling Sad' },
+  { label: 'Unsafe', emoji: '😧', prompt: 'I feel Unsafe today' },
 ]
 
 export default function WhisperInput() {
@@ -52,9 +52,7 @@ export default function WhisperInput() {
             <button
               key={emotion.label}
               onClick={() => {
-                setSelectedEmotion(emotion.label)
-                setEmotionText(`I am ${emotion.label}`)
-                inputRef.current?.focus()
+                navigate(`/chat?message=${encodeURIComponent(emotion.prompt)}`)
               }}
               title={`Feeling ${emotion.label}`}
               className={`w-[60px] h-[70px] border rounded-xl px-2 py-1 flex flex-col items-center justify-center text-sm transition 
@@ -74,7 +72,7 @@ export default function WhisperInput() {
           <input
             ref={inputRef}
             type="text"
-            placeholder="You can whisper anything here..."
+            placeholder="You can talk anything here with Kyrah..."
             className="flex-1 px-4 py-2 outline-none text-sm md:text-base bg-transparent"
             value={
               selectedEmotion && question
@@ -105,7 +103,6 @@ export default function WhisperInput() {
               const remaining = raw.slice(fullPrefix.length).trimStart();
               setQuestion(remaining);
             }}
-            onFocus={() => setShowSuggestions(true)}
           />
           <button
             className={`p-2 rounded-full text-[#5c4140] transition ${
@@ -180,7 +177,7 @@ export default function WhisperInput() {
             }}
             className="bg-[#bda5aa] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#a4898e] transition-all"
           >
-            Whisper Now
+            Talk with Kyrah
           </button>
         </div>
 
@@ -191,20 +188,18 @@ export default function WhisperInput() {
         )}
 
         {/* Example whispers (click to drop into input) */}
-        {showSuggestions && (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-            {suggestions.map((text, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => useSuggestion(text)}
-                className="text-left bg-white border border-[#f0eaea] rounded-xl p-4 shadow-sm hover:border-[#e1c9cf] hover:bg-[#fffafa] transition"
-              >
-                {text}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+          {suggestions.map((text, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => useSuggestion(text)}
+              className="text-left bg-white border border-[#f0eaea] rounded-xl p-4 shadow-sm hover:border-[#e1c9cf] hover:bg-[#fffafa] transition"
+            >
+              {text}
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   )

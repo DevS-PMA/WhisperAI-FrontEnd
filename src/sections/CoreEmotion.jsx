@@ -26,7 +26,7 @@ export default function CoreEmotion() {
 
           {/* Description */}
           <p className="text-base md:text-lg text-[#5b1f2e] leading-relaxed max-w-3xl mx-auto">
-            Whisper AI doesn't just process words—it understands emotions, recognizes patterns in your communication, and responds with the kind of empathy that makes you feel truly heard and validated.
+            Kyrah AI doesn't just process words—it understands emotions, recognizes patterns in your communication, and responds with the kind of empathy that makes you feel truly heard and validated.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export default function CoreEmotion() {
           onClick={() => navigate('/chat')}
           className="px-10 py-3 text-base font-medium rounded-full bg-gradient-to-b from-[#eecdd5] to-[#d8aeb9] text-[#321212] shadow-md hover:shadow-lg transition"
         >
-          Whisper Now
+          Talk with Kyrah
         </button>
       </div>
     </section>

@@ -9,6 +9,8 @@ import FeatureCards from './sections/FeatureCards'
 import CoreEmotion from './sections/CoreEmotion'
 import SafeExitButton from './components/SafeExitButton'
 import ChatPage from './pages/ChatPage'
+import JournalPage from './pages/JournalPage'
+
 import SignInPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 
@@ -76,6 +78,7 @@ export default function App() {
               }
             />
             <Route path="/chat" element={<ChatPage />} />
+            <Route path="/journal" element={<JournalPage />} />
             <Route path="/login" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
           </Routes>

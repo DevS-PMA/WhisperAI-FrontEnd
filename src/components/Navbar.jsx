@@ -25,8 +25,6 @@ export default function Navbar({ onLoginClick }) {
         setActiveTab('chat');
         window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { section: 'chat' } }));
       }
-    } else {
-      setActiveTab('');
     }
   }, [location]);
 
@@ -57,7 +55,7 @@ export default function Navbar({ onLoginClick }) {
             activeTab === "chat" ? activeStyle : ""
           }`}
         >
-          Chat with whisper
+          Chat with Kyrah
         </button>
         <button
           onClick={() => {

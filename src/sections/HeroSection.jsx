@@ -19,7 +19,7 @@ export default function HeroSection() {
             Your Quiet <span className="text-[#c05e6f]">Ally</span> in Emotional Awareness
           </h1>
           <p className="text-base md:text-lg text-[#3c2c2c] max-w-3xl">
-            Whisper AI offers compassionate and confidential support for women experiencing abuse. You are not alone.
+            Kyrah AI offers compassionate and confidential support for women experiencing abuse. You are not alone.
           </p>
         </div>
 

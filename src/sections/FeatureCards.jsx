@@ -26,7 +26,7 @@ export default function FeatureCards() {
     <section className="px-6 md:px-20 py-16 bg-white">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-center text-2xl md:text-3xl font-semibold text-[#392d2d] mb-14">
-          What Makes Whisper Special?
+          What Makes Kyrah AI Special?
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-4">

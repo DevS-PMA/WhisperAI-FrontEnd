@@ -1,8 +1,20 @@
-// src/pages/JournalPage.jsx
-
+import { useContext } from 'react';
+import { LoginContext } from '../App';
 import { Mic } from 'lucide-react';
 
 export default function JournalPage() {
+  const { isLoggedIn } = useContext(LoginContext);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#fffaf9] text-[#4a2f2f] px-6 py-10">
+        <p className="text-center text-lg">
+          Please <span className="text-[#d77474] underline cursor-pointer">log in</span> to access your Journal.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fffaf9] text-[#4a2f2f] px-6 py-10">
       <div className="max-w-2xl mx-auto">

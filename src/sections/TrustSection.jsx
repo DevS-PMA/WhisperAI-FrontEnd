@@ -52,7 +52,7 @@ export default function TrustSection() {
             onClick={() => navigate('/chat')}
             className="px-6 py-3 bg-gradient-to-b from-[#e6c0ca] to-[#c993a5] text-[#2b181b] font-medium rounded-full shadow-md hover:scale-105 transition duration-200"
           >
-            Whisper Now
+            Talk with Kyrah
           </button>
         </div>
       </div>

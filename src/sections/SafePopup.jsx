@@ -2,11 +2,13 @@ export default function SafePopup({ onContinue }) {
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4 py-12">
       <div className="bg-white rounded-2xl shadow-xl px-6 py-6 w-full max-w-sm text-center border border-[#e1bfc4]">
-        <img
-          src="/logo.webp"
-          alt="Whisper AI Logo"
-          className="mx-auto h-12 mb-4"
-        />
+        <div className="flex flex-col items-center justify-center mb-4">
+          <img
+            src="/whisper-ai/icons/logo.webp"
+            alt="Kyrah AI"
+            className="h-20 w-auto object-contain"
+          />
+        </div>
 
         <h3 className="text-lg font-semibold text-[#2e1a1a] mb-1">
           You’re safe here
