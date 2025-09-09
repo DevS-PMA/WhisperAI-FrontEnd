@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import SettingsModal from './SettingsModal'; // <- import it
 import { LoginContext } from '../App';
+import logo from '../assets/logo.webp';
 
 export default function Navbar({ onLoginClick }) {
   const navigate = useNavigate();
@@ -35,12 +36,14 @@ export default function Navbar({ onLoginClick }) {
 
   return (
     <header className="w-full flex justify-between items-center px-6 md:px-10 py-4 border-b border-[#d7cfcf] bg-white sticky top-0 z-50">
-      <div className="flex items-center gap-2">
-        <img src="/logo.png" alt="Whisper Logo" className="w-8 h-8" />
-        <span className="text-sm font-semibold text-[#4a2f2f]">
-          Whisper AI logo
-        </span>
-      </div>
+      <div
+  className="flex items-center gap-2 cursor-pointer"
+  onClick={() => navigate('/')}
+  title="Go to Home"
+>
+  <img src={logo} alt="Kyrah Logo" className="w-22 h-20 object-contain" />
+</div>
+
 
       <nav className="hidden md:flex gap-6 text-sm font-medium">
         <button
