@@ -22,7 +22,7 @@ const LoginModal = ({ onClose, mode, setMode }) => {
         </h2>
         <p className="text-sm text-gray-700 mb-4">
           {isLogin
-            ? 'Sign In to your Whisper account'
+            ? 'Sign In to your kyrah account'
             : 'You’re in control, everything you share is private and encrypted'}
         </p>
 
@@ -92,7 +92,7 @@ const LoginModal = ({ onClose, mode, setMode }) => {
           }}
           className="w-full border border-pink-300 text-[#5c4140] text-sm py-2 rounded-md mb-2"
         >
-          Anonymous chat with whisper
+          Anonymous chat with kyrah
         </button>
         <p className="text-xs text-center text-gray-500 mb-4">
           Your session will be private and deleted once you exit.
