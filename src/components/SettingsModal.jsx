@@ -43,7 +43,7 @@ export default function SettingsModal({ open, onClose, email = "user@example.com
           {/* right pane */}
           <section className="flex-1 p-6">
             <h2 className="text-[#4a2f2f] text-lg font-semibold mb-1">Profile</h2>
-            <p className="text-sm text-[#8b6b6b] mb-4">Manage your Whisper Ai profile</p>
+            <p className="text-sm text-[#8b6b6b] mb-4">Manage your kyrah Ai profile</p>
             <hr className="border-[#eadfdf] mb-4" />
 
             {/* Email (read-only for now) */}
